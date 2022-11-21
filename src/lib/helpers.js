@@ -1,3 +1,9 @@
+import { DateMath } from "./dateMath";
+
+export function parseUTCDate(dateString){
+    return new Date(new Date(dateString).toUTCString().substring(0, 25));
+
+}
 
 export function getFormattedDateTime(dateString){
     const date = new Date(dateString)
@@ -36,7 +42,7 @@ export function getTime(dateString){
 
 export function getAgeStr(birthdayStr){
     const birthday = new Date(birthdayStr)
-    const now = new Date()
+    const now = DateMath.now()
     const diff = now - birthday
     const timeDiffDays = diff / 1000 / 60 / 60 / 24
     if(timeDiffDays < 85) {

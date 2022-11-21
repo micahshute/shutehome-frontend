@@ -24,14 +24,14 @@ export default function BabyOvervirew(){
         error: sleepError,
         loading: sleepLoading, 
         reload: reloadSleepData,
-    } = useRest(`/babies/${baby.id}/sleeps?forDateRange=day`)
+    } = useRest(`/babies/${baby.id}/sleeps?forDateRange=day`, 'get', null, { useTimezone: true})
 
     const { 
         data: feedData,
         error: feedError,
         loading: feedLoading, 
         reload: reloadFeedData,
-    } = useRest(`/babies/${baby.id}/feedings?forDateRange=day`)
+    } = useRest(`/babies/${baby.id}/feedings?forDateRange=day`, 'get', null, { useTimezone: true })
 
     if(!baby){
         return <Navigate to="/" />
@@ -162,7 +162,7 @@ export default function BabyOvervirew(){
                         </tr>
                         <tr>
                             <th>Birth Height</th>
-                            <td>{getHeight(baby.birthweight)}</td>
+                            <td>{getHeight(baby.birthlength)}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -238,6 +238,21 @@ export default function BabyOvervirew(){
                     <Card 
                         headerComponent={<h2 className="text-center">Tummy Time</h2>}
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/tummy-times`)} 
+                    >
+                        <div className="ph-20 w-175 text-center">
+                            <div>
+                                { renderSleepTimes() }
+                            </div>
+                            <div className="text-center">
+                                <AddElementButton onClick={() => {}} center />
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+                <div className="flex flex-col m-10">
+                    <Card 
+                        headerComponent={<h2 className="text-center">Pump</h2>}
+                        onClick={() => navigate(`/baby-tracker/babies/${baby.id}/pumps`)} 
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>

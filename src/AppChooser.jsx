@@ -4,6 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
 import BabyTrackerApp from "./apps/AdminApp/BabyApp/BabyTrackerApp";
 import KnowledgeApp from "./apps/AdminApp/KnowledgeApp/KnowledgeApp";
@@ -23,6 +24,7 @@ export default function AppChooser(){
                 <Route path="/" element={ <AdminAppChooser /> } />
                 <Route path="/baby-tracker/*" element={ <BabyTrackerApp />} />
                 <Route path="/knowledge-tracker/*" element={ <KnowledgeApp /> } />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </Router>
     )

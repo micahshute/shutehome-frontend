@@ -4,17 +4,20 @@ import { useRest } from "../../../../hooks/useRest"
 import { useUser } from "../../../../hooks/useUser"
 import Card from "../../../../lib/Card"
 import { DateMath, Day, Week } from "../../../../lib/dateMath"
-import { getDate, getTime } from "../../../../lib/helpers"
+import { getDate, getTime, parseUTCDate, round } from "../../../../lib/helpers"
 import FeedDayChart from "./charts/FeedDayChart"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
 import FeedRecord from "./FeedRecord";
 import AddElementButton from "../../../../lib/AddElementButton";
+import FeedStatsChart from "./charts/FeedOverviewChart"
+import Loader from "../../../../lib/Loader"
 
 
 export default function ShowFeed(){
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [makeNewRecord, setMakeNewRecord] = useState(false)
     const [feedRecordToEdit, setFeedRecordToEdit] = useState(null)
 
     const navigate = useNavigate()
@@ -26,7 +29,14 @@ export default function ShowFeed(){
         error,
         loading,
         reload,
-    } = useRest(`/babies/${baby.id}/feedings?forDateRange=4weeks`)
+    } = useRest(`/babies/${baby.id}/feedings?forDateRange=4weeks`, 'get', null, {useTimezone: true})
+
+    const {
+        data: statData,
+        error: statError,
+        loading: statLoading,
+        reload: statReload
+    } = useRest(`/babies/${baby.id}/feedings/stats`, 'get', null, { useTimezone: true })
 
     const feedByDay = (feedData) => {
         if(!feedData){
@@ -36,6 +46,8 @@ export default function ShowFeed(){
         const feedDataBuckets = feedData.reduce((mem, feedDatum) => {
             const feedTime = new Date(feedDatum.time)
             const day = new Day(feedTime)
+            console.log(day.startTime)
+            console.log(day.toString())
             if(mem[day.toString()]){
                 mem[day.toString()].push(feedDatum)
             }else{
@@ -44,6 +56,16 @@ export default function ShowFeed(){
             return mem
         }, {})
 
+        console.log(Object.values(feedDataBuckets).map(feedsByDay => {
+            return {
+                day: DateMath.beginningOfDay(new Date(feedsByDay[0].time)),
+                feedData: feedsByDay
+            }
+        }).sort((a,b) => {
+            if(a.day > b.day) return -1
+            if(a.day < b.day) return 1
+            return 0
+        }))
         return Object.values(feedDataBuckets).map(feedsByDay => {
             return {
                 day: DateMath.beginningOfDay(new Date(feedsByDay[0].time)),
@@ -60,6 +82,7 @@ export default function ShowFeed(){
         setModalIsOpen(false)
         setFeedRecordToEdit(null)
         reload()
+        statReload()
     }
 
     const openEditModal = (feedRecord) => {
@@ -67,15 +90,25 @@ export default function ShowFeed(){
         setFeedRecordToEdit(feedRecord)
     }
 
+    const openCreateModal = () => {
+        setMakeNewRecord(true)
+        setModalIsOpen(true)
+    }
+
     const handleCloseModal = () => {
+        setMakeNewRecord(false)
         setModalIsOpen(false)
         setFeedRecordToEdit(null)
+    }
+    
+    const modalShouldBeRendered = () => {
+        return (modalIsOpen && feedRecordToEdit) || (modalIsOpen && makeNewRecord)
     }
 
     const renderEditModal = () => {
         return (
             <Modal 
-                isOpen={modalIsOpen && feedRecordToEdit}
+                isOpen={modalShouldBeRendered()}
                 onRequestClose={handleCloseModal}
                 contentLabel="Update feed record"
             >
@@ -117,9 +150,9 @@ export default function ShowFeed(){
                 if(fdata.quantity_type === 'amount'){
                     mem += fdata.quantity
                     if(fdata.food_type === 'formula') {
-                        totalFormulaAmount += mem
+                        totalFormulaAmount += fdata.quantity
                     }else if(fdata.food_type === 'bottle_breast'){
-                        totalBreastmilkAmount += mem
+                        totalBreastmilkAmount += fdata.quantity
                     }
                 }
                 return mem
@@ -169,6 +202,32 @@ export default function ShowFeed(){
         })
     }
 
+    const renderStatData = () => {
+        if(statLoading) {
+            return <Loader dark />
+        }
+
+        if(statError) {
+            return <p className="danger">There was an error loading your stats</p>
+        }
+       
+        if(statData){
+            return (
+                <div className="mt-30">
+                    <Card header="Two Week Daily Breakdown">
+                        <FeedStatsChart feedStatsData={statData} />
+                        <div>
+                            { statData.any_times_exist && <p className="text-lg">Average Breastfeed Time: {round(statData.average_time_per_day, 2)} mins</p>}
+                            { statData.any_times_exist && <p className="text-lg">Time StdDev: {round(statData.time_std, 2)} mins</p>}
+                            { statData.any_volumes_exist && <p className="text-lg">Average Feed Volume: {round(statData.average_volume_per_day, 2)} oz</p>}
+                            { statData.any_volumes_exist && <p className="text-lg">Vol. StdDev: {round(statData.volume_std, 2)} oz</p>}
+                        </div>
+                    </Card>
+                </div>
+            )
+        }
+    }
+
     return (
         <div className="page">
             <h1 className="text-center">{baby.name}'s Eat Record</h1>
@@ -180,13 +239,14 @@ export default function ShowFeed(){
                 <div className="w-15 minw-100p mt-0">
                     <div className="flex flex-col align-center flex-center">
                         <p className="text-bottom text-lg bold mt-0">Add Record</p>
-                        <AddElementButton onClick={() => alert('fuck')} center className="mt-0"/>
+                        <AddElementButton onClick={openCreateModal} center className="mt-0"/>
                     </div>
                 </div>
-
             </div>
             <div className="flex flex-start">
             </div>
+            { renderStatData() }
+            <h2 className="text-center mt-30">Daily Breakdown</h2>
             <div className="flex justify-center align-center w-full flex-col">
                 { renderFeedCardsByDay() }
 

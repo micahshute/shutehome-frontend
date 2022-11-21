@@ -1,4 +1,14 @@
+import { parseUTCDate } from "./helpers"
+
 export class DateMath {
+
+    static nowUTC(){
+        return new Date(new Date().toUTCString().substring(0, 25))
+    }
+
+    static now(){
+        return new Date()
+    }
 
     static add(date, dateUnit, amount){
         return dateUnit.add(amount).to(date)
@@ -16,18 +26,35 @@ export class DateMath {
         return this.eql(this.beginningOfDay(d1), this.beginningOfDay(d2))
     }
 
-    static beginningOfDay(date){
-        const newDate = new Date(date.getTime())
+    static beginningOfDayUTC(date){
+        const newDate = parseUTCDate(date)
         newDate.setUTCHours(0,0,0,0)
-        const timezoneMinuteOffset = newDate.getTimezoneOffset()
-        return new Date(newDate.getTime() + (timezoneMinuteOffset * 60 * 1000))
+        return new Date(newDate)
+    }
+
+    static beginningOfDay(date){
+        const inputDate = new Date(date)
+        const timezoneMinuteOffset = inputDate.getTimezoneOffset()
+        const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
+        const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
+        newDate.setUTCHours(0,0,0,0)
+        return new Date(newDate.getTime() + timezoneMsOffset)
+
+    }
+
+    static endOfDayUTC(date) {
+        const newDate = new Date(date)
+        newDate.setUTCHours(23,59,59,999)
+        return new Date(newDate)
     }
 
     static endOfDay(date) {
-        const newDate = new Date(date.getTime())
+        const inputDate = new Date(date)
+        const timezoneMinuteOffset = inputDate.getTimezoneOffset()
+        const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
+        const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
         newDate.setUTCHours(23,59,59,999)
-        const timezoneMinuteOffset = newDate.getTimezoneOffset()
-        return new Date(newDate.getTime() + (timezoneMinuteOffset * 60 * 1000))
+        return new Date(newDate.getTime() + timezoneMsOffset)
     }
 
     static beginningOfWeek(date){

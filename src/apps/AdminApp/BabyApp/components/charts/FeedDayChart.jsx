@@ -6,9 +6,10 @@ import {
     Label,
     Legend, 
     Bar, 
+    Tooltip,
     ResponsiveContainer 
 } from 'recharts'
-import { getTime, pad } from '../../../../../lib/helpers'
+import { pad, parseUTCDate } from '../../../../../lib/helpers'
 
 export default function FeedDayChart({ feedData, width, showBreastfeed=false, showBottle=true }){
 
@@ -41,10 +42,11 @@ export default function FeedDayChart({ feedData, width, showBreastfeed=false, sh
             <BarChart data={data} margin={{top: 5, right: 1, left: 1, bottom: 5}}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" interval={7}>
-                    <Label value="hour" position="bottom"/>
+                    <Label value="time" position="bottom"/>
                 </XAxis>
                 <YAxis />
-                <Legend verticalAlign="bottom" align="center" />
+                <Tooltip />
+                <Legend verticalAlign="bottom" align="right" />
                 { showBottle && <Bar dataKey="oz" fill="#8884d8" stackId="a" /> }
                 { showBreastfeed && <Bar dataKey="mins" fill="#82ca9d" stackId="a" /> }
             </BarChart>

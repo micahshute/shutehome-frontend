@@ -8,7 +8,7 @@ export function useLazyRest(){
     const [error, setError] = useState(null)
 
 
-    let call = async (url, method="get", body=null) => {
+    let call = async (url, method="get", body=null, options={useTimezone: false}) => {
         setLoading(true)
         setData(null)
         setError(null)
@@ -24,6 +24,14 @@ export function useLazyRest(){
             fetchOptions = {
                 ...fetchOptions,
                 body: JSON.stringify(body)
+            }
+        }
+
+        if(options.useTimezone){
+            if(url.includes("?")){
+                url += `&timezoneOffset=${(new Date()).getTimezoneOffset()}`
+            }else{
+                url += `?timezoneOffset=${(new Date()).getTimezoneOffset()}`
             }
         }
 

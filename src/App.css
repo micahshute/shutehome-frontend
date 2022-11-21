@@ -80,6 +80,10 @@ table {
   border-collapse: collapse;
 }
 
+.danger {
+  color:rgb(158, 0, 8);
+}
+
 .btn {
   border: none;
   outline: none;
