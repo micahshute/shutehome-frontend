@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { useRest } from "../../../../hooks/useRest"
-import { useUser } from "../../../../hooks/useUser"
-import Card from "../../../../lib/Card"
-import { DateMath, Day, Week } from "../../../../lib/dateMath"
-import { getDate, getTime, parseUTCDate, round } from "../../../../lib/helpers"
-import FeedDayChart from "./charts/FeedDayChart"
+import { useRest } from "../../../../../hooks/useRest"
+import { useUser } from "../../../../../hooks/useUser"
+import Card from "../../../../../lib/Card"
+import { DateMath, Day } from "../../../../../lib/dateMath"
+import { getDate, getTime, round } from "../../../../../lib/helpers"
+import FeedDayChart from "../charts/FeedDayChart"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
-import FeedRecord from "./FeedRecord";
-import AddElementButton from "../../../../lib/AddElementButton";
-import FeedStatsChart from "./charts/FeedOverviewChart"
-import Loader from "../../../../lib/Loader"
+import FeedRecord from "../forms/FeedRecord";
+import AddElementButton from "../../../../../lib/AddElementButton";
+import FeedStatsChart from "../charts/FeedOverviewChart"
+import Loader from "../../../../../lib/Loader"
 
 
 export default function ShowFeed(){

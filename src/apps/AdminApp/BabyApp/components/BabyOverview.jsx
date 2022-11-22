@@ -6,9 +6,9 @@ import { getAgeStr, getDate, getFormattedDateTime, getHeight, getHoroscopeSign, 
 import Card from "../../../../lib/Card";
 import { useRest } from "../../../../hooks/useRest";
 import Loader from "../../../../lib/Loader";
-import SleepRecord from "./SleepRecord";
+import SleepRecord from "./forms/SleepRecord";
 import Modal from 'react-modal';
-import FeedRecord from "./FeedRecord";
+import FeedRecord from "./forms/FeedRecord";
 
 
 
@@ -40,7 +40,7 @@ export default function BabyOvervirew(){
     const renderSummaryData = (data, error, loading, getElement) => {
         if(loading) return <Loader dark/>
         if(error) return <p>Error loading</p>
-        if(data && data.length === 0) return <p>No records found</p>
+        if(data && data.length === 0) return <p>No recent records found</p>
         if(data) {
             return (
                 <table className="text-left text-sm">
@@ -171,7 +171,7 @@ export default function BabyOvervirew(){
             <div className="flex flex-start mt-30 flex-wrap align-stretch">
                 <div className="flex flex-col m-10">
                     <Card 
-                        onClick={() => navigate(`/baby-tracker/babies/${baby.id}/sleep`)} 
+                        onClick={() => navigate(`/baby-tracker/babies/${baby.id}/sleeps`)} 
                         headerComponent={<h2 className="text-center">Sleep</h2>}
                     >
                         <div className="ph-20 w-175 text-center">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import DateTimePicker from 'react-datetime-picker'
-import { useLazyRest } from '../../../../hooks/useLazyRest'
-import LoadingButton from '../../../../lib/LoadingButton'
+import { useLazyRest } from '../../../../../hooks/useLazyRest'
+import LoadingButton from '../../../../../lib/LoadingButton'
 
 export default function SleepRecord({babyId, onComplete}){
 
