@@ -1,4 +1,4 @@
-import { DateMath } from "./dateMath";
+import { DateMath } from "./time/dateMath";
 
 export function parseUTCDate(dateString){
     return new Date(new Date(dateString).toUTCString().substring(0, 25));

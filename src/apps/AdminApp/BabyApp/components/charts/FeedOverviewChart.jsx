@@ -10,7 +10,7 @@ import {
     Tooltip,
     ReferenceLine
 } from 'recharts'
-import { getDate } from '../../../../../lib/helpers'
+import { getDate } from '../../../../../lib/helpers/helpers'
 
 
 export default function FeedStatsChart({ feedStatsData }){

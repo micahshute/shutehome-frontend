@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
 import Card from "../../../../../lib/Card"
-import { DateMath, Day } from "../../../../../lib/dateMath"
-import { getDate, getTime, round } from "../../../../../lib/helpers"
+import { DateMath, Day } from "../../../../../lib/helpers/time/dateMath"
+import { getDate, getTime, round } from "../../../../../lib/helpers/helpers"
 import FeedDayChart from "../charts/FeedDayChart"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
@@ -29,7 +29,7 @@ export default function ShowFeed(){
         error,
         loading,
         reload,
-    } = useRest(`/babies/${baby.id}/feedings?forDateRange=4weeks`, 'get', null, {useTimezone: true})
+    } = useRest(`/babies/${baby.id}/feedings?forDateRange=2weeks`, 'get', null, {useTimezone: true})
 
     const {
         data: statData,
@@ -46,8 +46,6 @@ export default function ShowFeed(){
         const feedDataBuckets = feedData.reduce((mem, feedDatum) => {
             const feedTime = new Date(feedDatum.time)
             const day = new Day(feedTime)
-            console.log(day.startTime)
-            console.log(day.toString())
             if(mem[day.toString()]){
                 mem[day.toString()].push(feedDatum)
             }else{
@@ -56,16 +54,6 @@ export default function ShowFeed(){
             return mem
         }, {})
 
-        console.log(Object.values(feedDataBuckets).map(feedsByDay => {
-            return {
-                day: DateMath.beginningOfDay(new Date(feedsByDay[0].time)),
-                feedData: feedsByDay
-            }
-        }).sort((a,b) => {
-            if(a.day > b.day) return -1
-            if(a.day < b.day) return 1
-            return 0
-        }))
         return Object.values(feedDataBuckets).map(feedsByDay => {
             return {
                 day: DateMath.beginningOfDay(new Date(feedsByDay[0].time)),
@@ -226,6 +214,14 @@ export default function ShowFeed(){
                 </div>
             )
         }
+    }
+
+    if(loading){
+        return (
+            <div className="page">
+                <Loader dark />
+            </div>
+        )
     }
 
     return (

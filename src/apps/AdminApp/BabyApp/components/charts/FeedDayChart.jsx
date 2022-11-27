@@ -9,18 +9,18 @@ import {
     Tooltip,
     ResponsiveContainer 
 } from 'recharts'
-import { pad, parseUTCDate } from '../../../../../lib/helpers'
+
+import { pad, parseUTCDate } from '../../../../../lib/helpers/helpers'
 
 export default function FeedDayChart({ feedData, width, showBreastfeed=false, showBottle=true }){
 
     const minutes = Array.from({length: (4 * 24)}, (x, i) => i * 15)
     const data = minutes.map(minute => {
         const hour = Number.parseInt(minute / 60);
-        const hourMinute = minute % 60
         return {
             oz: 0,
             mins: 0,
-            name: `${pad(hour, 2)}`//:${pad(hourMinute, 2)}`
+            name: `${pad(hour, 2)}`
         }
     })
 

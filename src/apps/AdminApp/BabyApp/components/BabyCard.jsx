@@ -5,7 +5,7 @@ import Card from "../../../../lib/Card"
 import { useToasts } from 'react-toast-notifications'
 import Modal from 'react-modal';
 import { useUser } from "../../../../hooks/useUser"
-import { getAgeStr, getFormattedDateTime, getWeight, getHeight, getHoroscopeSign } from "../../../../lib/helpers"
+import { getAgeStr, getFormattedDateTime, getWeight, getHeight, getHoroscopeSign } from "../../../../lib/helpers/helpers"
 import RegisterBaby from "./RegisterBaby"
 
 export default function BabyCard({baby, gotoEdit}){

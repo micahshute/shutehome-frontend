@@ -1,4 +1,5 @@
-import { parseUTCDate } from "./helpers"
+import { parseUTCDate } from "../helpers"
+import { DateRange } from './dateRange'
 
 export class DateMath {
 
@@ -71,7 +72,7 @@ export class DateMath {
     }
 }
 
-class DateUnit {
+class DateUnit extends DateRange{
 
     static add(amount){
         return {
@@ -91,15 +92,18 @@ class DateUnit {
 export class Day extends DateUnit {
     static value = 24 * 60 * 60 * 1000;
 
-    constructor(date){
-        super(date)
-        this.startTime = DateMath.beginningOfDay(date)
-        this.endTime = DateMath.endOfDay(date)
+    static fromString(str){
+        const startTime = Number.parseInt(str.split("::")[0])
+        const startDate = new Date(startTime)
+        return new this(startDate)
     }
 
-    includes(date){
-        return this.startTime <= date && this.endTime >= date
+    constructor(date){
+        const startTime = DateMath.beginningOfDay(date)
+        const endTime = DateMath.endOfDay(date)
+        super(startTime, endTime)
     }
+
 
     toString(){
         return `${this.startTime.getTime()}::${this.endTime.getTime()}`
@@ -117,14 +121,11 @@ export class Week extends DateUnit {
     }
 
     constructor(date){
-        super(date)
-        this.startTime = DateMath.beginningOfWeek(date)
-        this.endTime = DateMath.endOfWeek(date)
+        const startTime = DateMath.beginningOfWeek(date)
+        const endTime = DateMath.endOfWeek(date)
+        super(startTime, endTime)
     }
 
-    includes(date){
-        return this.startTIme <= date && this.endTime >= date
-    }
 
     toString(){
         return `${this.startTime.getTime()}::${this.endTime.getTime()}`

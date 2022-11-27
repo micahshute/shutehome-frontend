@@ -3,11 +3,17 @@ import DateTimePicker from 'react-datetime-picker'
 import { useLazyRest } from '../../../../../hooks/useLazyRest'
 import LoadingButton from '../../../../../lib/LoadingButton'
 
-export default function SleepRecord({babyId, onComplete}){
+export default function SleepRecord({babyId, onComplete, sleepRecord=null}){
 
     let initialStartTime = new Date()
     let initialEndTime = new Date()
     let initialNotes = ''
+
+    if(sleepRecord){
+        initialStartTime = sleepRecord.start_time
+        initialEndTime = sleepRecord.end_time
+        initialNotes = sleepRecord.notes
+    }
     
     const [startTime, setStartTime] = useState(initialStartTime)
     const [endTime, setEndTime] = useState(initialEndTime)
@@ -36,8 +42,16 @@ export default function SleepRecord({babyId, onComplete}){
             end_time: endTime,
             notes
         }
+        if(sleepRecord){
+            call(`/sleeps/${sleepRecord.id}`, 'put', body)
+        }else{
+            call(`/babies/${babyId}/sleeps`, 'post', body)
+        }
+    }
 
-        call(`/babies/${babyId}/sleeps`, 'post', body)
+    const handleDelete = () => {
+        const url = `/sleeps/${sleepRecord.id}`
+        call(url, 'delete')
     }
 
     return (
@@ -55,7 +69,8 @@ export default function SleepRecord({babyId, onComplete}){
                 <textarea id="notes" value={notes} onChange={handleUpdateNotes} rows={10}/>
             </div>
             <div className="mt-30"></div>
-            <LoadingButton onClick={handleSubmit} loading={loading} text="Submit"/>
+            { sleepRecord && <LoadingButton onClick={handleDelete} loading={loading} text="Delete" type="danger" />}
+            <LoadingButton onClick={handleSubmit} loading={loading} text="Submit" className="float-right" />
         </div>
     )
 }

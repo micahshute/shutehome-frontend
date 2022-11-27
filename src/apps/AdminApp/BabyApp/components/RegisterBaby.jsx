@@ -4,7 +4,7 @@ import DateTimePicker from 'react-datetime-picker'
 import { useLazyRest } from "../../../../hooks/useLazyRest"
 import LoadingButton from "../../../../lib/LoadingButton"
 import { useUser } from "../../../../hooks/useUser"
-import { round } from "../../../../lib/helpers"
+import { round } from "../../../../lib/helpers/helpers"
 
 export default function RegisterBaby( {closeModal, baby=null} ){
 

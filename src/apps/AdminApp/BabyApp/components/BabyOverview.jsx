@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import AddElementButton from "../../../../lib/AddElementButton";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../../../../hooks/useUser";
-import { getAgeStr, getDate, getFormattedDateTime, getHeight, getHoroscopeSign, getTime, getTimeDiff, getWeight } from "../../../../lib/helpers";
+import { getAgeStr, getDate, getFormattedDateTime, getHeight, getHoroscopeSign, getTime, getTimeDiff, getWeight } from "../../../../lib/helpers/helpers";
 import Card from "../../../../lib/Card";
 import { useRest } from "../../../../hooks/useRest";
 import Loader from "../../../../lib/Loader";

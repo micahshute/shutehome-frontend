@@ -29,7 +29,8 @@ export function useRest(url, method="get", body=null, options={useTimezone: fals
             }
         }
 
-        if(options.useTimezone){
+
+        if(options.useTimezone && !url.includes("timezoneOffset")){
             if(url.includes("?")){
                 url += `&timezoneOffset=${(new Date()).getTimezoneOffset()}`
             }else{
