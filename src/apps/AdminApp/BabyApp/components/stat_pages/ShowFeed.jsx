@@ -112,7 +112,7 @@ export default function ShowFeed(){
     const renderFeedRows = (dataForDay) => {
         return dataForDay.map(datum => {
             return (
-                <tr>
+                <tr key={datum.id}>
                     <td className="text-center">{getTime(datum.time)}</td>
                     <td className="text-center">{datum.quantity}</td>
                     <td className="text-center">{datum.quantity_type === 'time' ? 'mins' : 'oz'}</td>

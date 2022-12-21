@@ -22,6 +22,12 @@ export function getDate(dateString){
     return `${month}/${day}`
 }
 
+export function getFullDate(dateString){
+    const shortDate = getDate(dateString)
+    const date = new Date(dateString)
+    return `${shortDate}/${date.getFullYear()}`
+}
+
 export function getTimeDiff(dateStr1, dateStr2) {
     const d1 = new Date(dateStr1)
     const d2 = new Date(dateStr2)
@@ -40,10 +46,8 @@ export function getTime(dateString){
     return `${hour}:${minutes}`
 }
 
-export function getAgeStr(birthdayStr){
-    const birthday = new Date(birthdayStr)
-    const now = DateMath.now()
-    const diff = now - birthday
+export function getAgeStrAtDate(birthday, eventDate){
+    const diff = eventDate - birthday
     const timeDiffDays = diff / 1000 / 60 / 60 / 24
     if(timeDiffDays < 85) {
         const val = Math.floor(timeDiffDays / 7)
@@ -56,14 +60,29 @@ export function getAgeStr(birthdayStr){
     }else{
         return `${round(timeDiffDays / 365)} years`
     }
+
+}
+
+export function getAgeStr(birthdayStr){
+    const birthday = new Date(birthdayStr)
+    const now = DateMath.now()
+    return getAgeStrAtDate(birthday, now)
+}
+
+export function weightFloatToPoundsOunces(num){
+    const lbs = Number.parseInt(num)
+    const lbsLeftover = num - lbs
+    const oz = round(lbsLeftover * 16)
+    return {
+        lbs,
+        oz
+    }
 }
 
 export function getWeight(lbFraction, units="lboz"){
     switch(units){
         case "lboz":
-            const lbs = Math.round(lbFraction)
-            const lbsLeftover = lbFraction - lbs
-            const oz = Math.round(lbsLeftover * 16)
+            const {lbs, oz} = weightFloatToPoundsOunces(lbFraction)
             return `${lbs} lbs ${oz} oz`
         default:
             return "unsupported units"

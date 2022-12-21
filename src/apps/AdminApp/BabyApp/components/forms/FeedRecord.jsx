@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import DateTimePicker from 'react-datetime-picker'
+import { useToasts } from 'react-toast-notifications'
 import { useLazyRest } from '../../../../../hooks/useLazyRest'
 import LoadingButton from '../../../../../lib/LoadingButton'
 
@@ -53,6 +54,7 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
     const [quality, setQuality] = useState(initialQuality)
     const [notes, setNotes] = useState(initialNotes)
 
+    const { addToast } = useToasts()
 
     const handleSelectFeedType = e => {
         setQuantity(0)
@@ -69,7 +71,10 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
 
     useEffect(() => {
         if(!loading && !error && data){
+            addToast('Saved record successfully', { appearance: 'success' })
             onComplete()
+        } else if(error){
+            addToast('There was a problem saving your record', { appearance: 'error' })
         }
     }, [data, error, loading])
 

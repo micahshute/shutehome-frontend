@@ -2,12 +2,13 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useLazyRest } from "../hooks/useLazyRest"
 import { useUser } from "../hooks/useUser"
-
+import iconHome from '../assets/icon_home.png';
 
 export default function Signup(){
     const [name, setName] = useState("")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [shutehomeSecret, setShutehomeSecret] = useState("")
     const { login } = useUser()
 
     const {
@@ -21,7 +22,8 @@ export default function Signup(){
         const body = {
             name,
             username,
-            password
+            password,
+            secret: shutehomeSecret
         }
         setName('')
         setUsername('')
@@ -40,34 +42,59 @@ export default function Signup(){
     )
 
     const renderLoginLink = () => (
-        <p>Already have an account?<Link to='/'>Login</Link></p>
+        <p>Already have an account?{` `}<Link to='/' className="dark-link bold">Login</Link></p>
     )
 
 
     return (
-        <div>
-            <label htmlFor="name">Name</label>
-            <input 
-                type="text" 
-                id="name"
-                onChange={e => setName(e.target.value)}
-                value={name}
-            />
-            <label htmlFor="username">Username</label>
-            <input 
-                type="text" 
-                id="username"
-                onChange={e => setUsername(e.target.value)}
-                value={username}
-            />
-            <label htmlFor="password">Password</label>
-            <input 
-                id="password"
-                type="password"
-                onChange={e => setPassword(e.target.value)}
-                value={password}
-            />
-            <button onClick={handleSignup} disabled={loading}>Create Account</button>
+        <div className="dark-landing page flex align-center flex-col">
+            <div>
+                <img src={iconHome}/>
+            </div>
+            <h1>ShuteHome</h1>
+            <div className="mt-10">
+                <label htmlFor="name">Name</label>
+                <input 
+                    className="input-dark"
+                    type="text" 
+                    id="name"
+                    onChange={e => setName(e.target.value)}
+                    value={name}
+                />
+            </div>
+            <div className="mt-5">
+                <label htmlFor="username">Username</label>
+                <input 
+                    className="input-dark"
+                    type="text" 
+                    id="username"
+                    onChange={e => setUsername(e.target.value)}
+                    value={username}
+                />
+            </div>
+            <div className="mt-5">
+                <label htmlFor="password">Password</label>
+                <input 
+                    className="input-dark"
+                    id="password"
+                    type="password"
+                    onChange={e => setPassword(e.target.value)}
+                    value={password}
+                />
+            </div>
+            <div className="mt-5">
+                <label htmlFor="secret">ShuteHome Secret</label>
+                <input 
+                    className="input-dark"
+                    id="secret"
+                    type="password"
+                    onChange={e => setShutehomeSecret(e.target.value)}
+                    value={shutehomeSecret}
+                />
+            </div>
+            <div className="mt-30">
+                <button className="btn-dark" onClick={handleSignup} disabled={loading}>Create Account</button>
+            </div>
             { error && renderError() }
             { renderLoginLink() }
         </div>

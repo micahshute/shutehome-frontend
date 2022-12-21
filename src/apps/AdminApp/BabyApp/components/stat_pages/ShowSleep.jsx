@@ -1,19 +1,27 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
 import Card from "../../../../../lib/Card"
 import { getDate, getTime, round } from "../../../../../lib/helpers/helpers"
-import { DateMath, Day } from "../../../../../lib/helpers/time/dateMath"
+import { Day } from "../../../../../lib/helpers/time/dateMath"
 import { DateRange } from "../../../../../lib/helpers/time/dateRange"
 import Loader from "../../../../../lib/Loader"
 import SleepDayChart from "../charts/SleepDayChart"
 import { useNavigate, useParams } from "react-router-dom"
+import { AiFillEdit } from "react-icons/ai"
+import Modal from 'react-modal';
+import SleepRecord from "../forms/SleepRecord"
+import AddElementButton from "../../../../../lib/AddElementButton"
 
 export default function ShowSleep(){
 
     const { id } = useParams()
     const { babies } = useUser().user
     const navigate = useNavigate()
+
+    const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [sleepRecordToEdit, setSleepRecordToEdit] = useState(null)
+    const [makeNewRecord, setMakeNewRecord] = useState(true)
 
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === id.toString()), [babies, id])
 
@@ -112,13 +120,31 @@ export default function ShowSleep(){
             currSleepIndex++
         }
         daysToDaySleepTotalMinutes[dayStr] = totalSleepMinutes
-        if(currSleepIndex >= sortedSleeps.length){
+        if(currSleepIndex > sortedSleeps.length){
             return mem
         }
         // Do this for when a sleep extends over 2 days (eg a normal night's sleep)
         if(currSleepIndex > 0) { currSleepIndex-- }
         return mem
     }, {})    
+
+
+    const renderCardForDay = dayStr => {
+        const shouldRender = (daysToApplicableDateRanges[dayStr] || []).length > 0
+        if(shouldRender){
+            const totalSleepMinutes = daysToDaySleepTotalMinutes[dayStr]
+            const sleepHours = round(totalSleepMinutes / 60, 2)
+            return (
+                <Card header={getDate(Day.fromString(dayStr).startTime)}>
+                    {renderChartForDay(dayStr)}
+                    {renderTableForDay(dayStr)}
+                    <p>24 hr total: {sleepHours} hrs</p>
+                </Card>
+            )
+        }
+
+        return null
+    }
 
     const renderChartForDay = (dayStr) => {
         const sleepDataIndices = daysToApplicableDateRanges[dayStr] || []
@@ -130,25 +156,28 @@ export default function ShowSleep(){
         const sleepDataIndices = daysToApplicableDateRanges[dayStr] || []
         const sleepRangeAndData = sleepDataIndices.map(i => sortedSleeps[i])
         return (
-            <table>
+            <table className="text-left text-sm">
                 <thead>
                     <tr>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Duration</th>
+                        <th className="p-6">Start Time</th>
+                        <th className="p-6">End Time</th>
+                        <th className="p-6">Duration</th>
+                        <th className="p-6"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    { sleepRangeAndData.map(sleepDatum => {
-                        
-                        return (
-                            <tr>
-                                <td>{getTime(sleepDatum.data.start_time)}</td>
-                                <td>{getTime(sleepDatum.data.end_time)}</td>
-                                <td>{sleepDatum.dateRange.durationMinutes()} mins</td>
-                            </tr>
+                    { sleepRangeAndData.map(sleepDatum => (
+                        <tr key={sleepDatum.id}>
+                            <td className="p-6">{getTime(sleepDatum.data.start_time)}</td>
+                            <td className="p-6">{getTime(sleepDatum.data.end_time)}</td>
+                            <td className="p-6">{round(sleepDatum.dateRange.durationMinutes() / 60, 2)} hrs</td>
+                            <td className="p-6"><AiFillEdit 
+                                style={{cursor: 'pointer'}}
+                                onClick={() => openEditModal(sleepDatum.data)}
+                            /></td>
+                        </tr>
                         )
-                    })}
+                    )}
                 </tbody>
             </table>
         )
@@ -156,34 +185,79 @@ export default function ShowSleep(){
 
     const renderDayCards = () => {
         return days.map(dayStr => {
-            const totalSleepMinutes = daysToDaySleepTotalMinutes[dayStr]
-            const sleepHours = round(totalSleepMinutes / 60, 2)
             return (
                 <div key={dayStr} className="m-10">
-                    <Card header={getDate(Day.fromString(dayStr).startTime)}>
-                        {renderChartForDay(dayStr)}
-                        {renderTableForDay(dayStr)}
-                        <p>Total: {sleepHours} hrs</p>
-                    </Card>
+                    { renderCardForDay(dayStr) }
                 </div>
             )
         })
     }
 
-    const averageHoursPerDay = round((totalSleepTimeMinutes / 60) / 14, 2)
+    const handleUpdate = () => {
+        setModalIsOpen(false)
+        setSleepRecordToEdit(null)
+        reload()
+    }
+
+    const openEditModal = datum => {
+        setModalIsOpen(true)
+        setSleepRecordToEdit(datum)
+    }
+
+    const openCreateModal = () => {
+        setMakeNewRecord(true)
+        setModalIsOpen(true)
+    }
+
+    const handleCloseModal = () => {
+        setMakeNewRecord(false)
+        setModalIsOpen(false)
+        setSleepRecordToEdit(null)
+    }
+
+    const modalShouldBeRendered = () => {
+        return !!((modalIsOpen && sleepRecordToEdit) || (modalIsOpen && makeNewRecord))
+    }
+
+
+    const renderEditModal = () => {
+        return(
+            <Modal
+                isOpen={modalShouldBeRendered()} 
+                onRequestClose={handleCloseModal}
+                contentLabel="Update sleep record"
+            >
+                <div>
+                    <button className="x" onClick={handleCloseModal}>Close</button>
+                    <SleepRecord babyId={baby.id} onComplete={handleUpdate} sleepRecord={sleepRecordToEdit} />
+                </div>
+            </Modal>
+        ) 
+    }
+
+    const numberOfDaysWithData = Object.values(daysToDaySleepTotalMinutes).filter(mins => mins && mins > 0).length
+    const averageHoursPerDay = round((totalSleepTimeMinutes / 60) / numberOfDaysWithData, 2)
 
     return (
         <div className="page">
-            <button 
-                onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                className="btn btn-primary"     
-            >Back</button>
-            <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2>
+            <div className="flex space-between align-center">
+                <button 
+                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
+                    className="btn btn-primary"     
+                >Back</button>
+                <div className="flex flex-col align-center flex-center">
+                    <p className="text-bottom text-lg bold mt-0">Add Record</p>
+                    <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                </div>
+            </div>
+            { numberOfDaysWithData > 0 && <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2> }
+            <p className="text-sm">Coming soon: Avg bedtime</p>
             { renderDayCards() }
             <button 
                 onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
                 className="btn btn-primary"     
             >Back</button>
+            { renderEditModal() }
         </div>
     )
 }

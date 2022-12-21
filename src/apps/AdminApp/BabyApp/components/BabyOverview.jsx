@@ -6,9 +6,14 @@ import { getAgeStr, getDate, getFormattedDateTime, getHeight, getHoroscopeSign, 
 import Card from "../../../../lib/Card";
 import { useRest } from "../../../../hooks/useRest";
 import Loader from "../../../../lib/Loader";
-import SleepRecord from "./forms/SleepRecord";
 import Modal from 'react-modal';
+import SleepRecord from "./forms/SleepRecord";
 import FeedRecord from "./forms/FeedRecord";
+import DiaperRecord from './forms/DiaperRecord'
+import TummyTimeRecord from './forms/TummyTimeRecord'
+import EventRecord from './forms/EventRecord'
+import MeasurementRecord from "./forms/MeasurementRecord";
+import PumpRecord from "./forms/PumpRecord";
 
 
 
@@ -18,6 +23,12 @@ export default function BabyOvervirew(){
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === id.toString()), [babies, id])
     const [addSleepModalIsOpen, setAddSleepModalIsOpen] = useState(false)
     const [addFeedModalIsOpen, setAddFeedModalIsOpen] = useState(false)
+    const [addDiaperModalIsOpen, setAddDiaperModalIsOpen] = useState(false)
+    const [addTummyTimeModalIsOpen, setAddTummyTimeModalIsOpen] = useState(false)
+    const [addPumpModalIsOpen, setAddPumpModalIsOpen] = useState(false)
+    const [addMeasurementModalIsOpen, setAddMeasurementModalIsOpen] = useState(false)
+    const [addEventModalIsOpen, setAddEventModalIsOpen] = useState(false)
+
     const navigate = useNavigate()
     const { 
         data: sleepData,
@@ -33,6 +44,41 @@ export default function BabyOvervirew(){
         reload: reloadFeedData,
     } = useRest(`/babies/${baby.id}/feedings?forDateRange=day`, 'get', null, { useTimezone: true })
 
+    const {
+        data: diaperData,
+        error: diaperError,
+        loading: diaperLoading,
+        reload: reloadDiaperData
+    } = useRest(`/babies/${baby.id}/diapers?forDateRange=day`, 'get', null, { useTimezone: true })
+
+    const {
+        data: tummyTimeData,
+        error: tummyTimeError,
+        loading: tummyTimeLoading,
+        reload: reloadTummyTimeData
+    } = useRest(`/babies/${baby.id}/tummy_times?forDateRange=day`, 'get', null, {useTimezone: true})
+
+    const {
+        data: pumpData,
+        error: pumpError,
+        loading: pumpLoading,
+        reload: reloadPumpData
+    } = useRest(`/babies/${baby.id}/pumps?forDateRange=day`, 'get', null, {useTimezone: true})
+
+    const {
+        data: measurementData,
+        error: measurementError,
+        loading: measurementLoading,
+        reload: reloadMeasurementData
+    } = useRest(`/babies/${baby.id}/measurements?forDateRange=day`, 'get', null, {useTimezone: true})
+
+    const {
+        data: eventData,
+        error: eventError,
+        loading: eventLoading,
+        reload: reloadEventData
+    } = useRest(`/babies/${baby.id}/events?forDateRange=day`, 'get', null, { useTimezone: true })
+
     if(!baby){
         return <Navigate to="/" />
     }
@@ -40,7 +86,7 @@ export default function BabyOvervirew(){
     const renderSummaryData = (data, error, loading, getElement) => {
         if(loading) return <Loader dark/>
         if(error) return <p>Error loading</p>
-        if(data && data.length === 0) return <p>No recent records found</p>
+        if(data && data.length === 0) return <p>No recent records</p>
         if(data) {
             return (
                 <table className="text-left text-sm">
@@ -98,6 +144,96 @@ export default function BabyOvervirew(){
 
         return renderSummaryData(feedData, feedError, feedLoading, getFeedElement)
     }
+    
+    const renderDiapers = () => {
+        const getDiaperElement = (diaperData) => {
+            let content;
+            if(diaperData.has_liquid){
+                content = diaperData.has_solid ? "Pee and Poop" : "Pee"
+            }else if(diaperData.has_solid){
+                content = "Poop"
+            }else{
+                content = "Clean"
+            }
+            return (
+                <tr className="divided-tr" key={diaperData.id}>
+                    <th>{getDate(diaperData.time)}</th>
+                    <td className="pl-10">{getTime(diaperData.time)}</td>
+                    <th className="pl-10">Had:</th>
+                    <td className="pl-10">{content}</td>
+                </tr>
+            )
+        }
+
+        return renderSummaryData(diaperData, diaperError, diaperLoading, getDiaperElement)
+    }
+
+    const renderTummyTimes = () => {
+        const getTummyTimeElement = (tummyTimeDatum) => {
+            const duration = getTimeDiff(tummyTimeDatum.start_time, tummyTimeDatum.end_time)
+            return (
+                <tr className="divided-tr" key={tummyTimeDatum.id}>
+                    <th>{getDate(tummyTimeDatum.end_time)}</th>
+                    <td className="pl-10">{getTime(tummyTimeDatum.end_time)}</td>
+                    <th className="pl-10">Length</th>
+                    <td className="pl-10">{duration}</td>
+                </tr>
+            )
+        }
+
+        return renderSummaryData(tummyTimeData, tummyTimeError, tummyTimeLoading, getTummyTimeElement)
+    }
+
+    const renderMeasurements = () => {
+        const getMeasurementElement = (measurementDatum) => {
+            const weight = measurementDatum.category === 'weight' ? measurementDatum.value : null
+            const height = measurementDatum.category === 'height' ? measurementDatum.value : null
+            const headCircumference = measurementDatum.category === 'head_circumference' ? measurementDatum.value : null
+            const unconventional = !weight && !height && !headCircumference
+            return (
+                <tr className="divided-tr" key={measurementDatum.id}>
+                    <th>{getDate(measurementDatum.time)}</th>
+                    {weight && <th className="pl-10">Weight</th> }
+                    {weight && <td className="pl-10">{getWeight(weight)}</td> }
+                    {height && <th className="pl-10">Height</th> }
+                    {height && <td className="pl-10">{getHeight(height)}</td> }
+                    {headCircumference && <th className="pl-10">Head Cir</th> }
+                    {headCircumference && <td className="pl-10">{getHeight(headCircumference)}</td> }
+                    {unconventional&& <th className="pl-10">{measurementDatum.category}</th> }
+                    {unconventional && <td className="pl-10">{measurementDatum.value}</td> }
+                </tr>
+            )
+        }
+
+        return renderSummaryData(measurementData, measurementError, measurementLoading, getMeasurementElement)
+    }
+
+    const renderPumps = () => {
+        const getPumpElement = (pumpDatum) => {
+            return (
+                <tr className="divided-tr" key={pumpDatum.id}>
+                    <th className="pl-10">{getDate(pumpDatum.start_time)}</th>
+                    <td className="pl-10">{getTimeDiff(pumpDatum.start_time, pumpDatum.end_time)}</td>
+                    <td className="pl-10">{pumpDatum.yield} {pumpDatum.units}</td>
+                </tr>
+            )
+        }
+
+        return renderSummaryData(pumpData, pumpError, pumpLoading, getPumpElement)
+    }
+
+    const renderEvents = () => {
+        const getEventElement = (eventDatum) => {
+            return (
+                <tr className="divided-tr" key={eventDatum.id}>
+                    <th className="pl-10">{getDate(eventDatum.time)}</th>
+                    <td className="pl-10">{eventDatum.name}</td>
+                </tr>
+            )
+        }
+
+        return renderSummaryData(eventData, eventError, eventLoading, getEventElement)
+    }
 
     const handleAddSleep = () => {
         setAddSleepModalIsOpen(false)
@@ -117,6 +253,56 @@ export default function BabyOvervirew(){
     const handleGotoFeedModal = e => {
         e.stopPropagation()
         setAddFeedModalIsOpen(true)
+    }
+
+    const handleAddDiaper = () => {
+        setAddDiaperModalIsOpen(false)
+        reloadDiaperData()
+    }
+
+    const handleGoToDiaperModal = e => {
+        e.stopPropagation()
+        setAddDiaperModalIsOpen(true)
+    }
+
+    const handleAddTummyTime = () => {
+        setAddTummyTimeModalIsOpen(false)
+        reloadTummyTimeData()
+    }
+
+    const handleGoToTummyTimeModal = e => {
+        e.stopPropagation()
+        setAddTummyTimeModalIsOpen(true)
+    }
+
+    const handleAddPump = () => {
+        setAddPumpModalIsOpen(false)
+        reloadPumpData()
+    }
+
+    const handleGoToPumpModal = e => {
+        e.stopPropagation()
+        setAddPumpModalIsOpen(true)
+    }
+
+    const handleAddMeasurement = () => {
+        setAddMeasurementModalIsOpen(false)
+        reloadMeasurementData()
+    }
+
+    const handleGoToMeasurementModal = e => {
+        e.stopPropagation()
+        setAddMeasurementModalIsOpen(true)
+    }
+
+    const handleAddEvent = () => {
+        setAddEventModalIsOpen(false)
+        reloadEventData()
+    }
+
+    const handleGoToEventModal = e => {
+        e.stopPropagation()
+        setAddEventModalIsOpen(true)
     }
 
     return (
@@ -226,13 +412,23 @@ export default function BabyOvervirew(){
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>
-                                { renderSleepTimes() }
+                                { renderDiapers() }
                             </div>
                             <div className="text-center">
-                                <AddElementButton onClick={() => {}} center />
+                                <AddElementButton onClick={handleGoToDiaperModal} center />
                             </div>
                         </div>
                     </Card>
+                    <Modal 
+                        isOpen={addDiaperModalIsOpen}
+                        onRequestClose={() => setAddDiaperModalIsOpen(false)}
+                        contentLabel="Add diaper record"
+                    >
+                        <div className="ml-30 mt-30 mr-30">
+                            <button className="x" onClick={() => setAddDiaperModalIsOpen(false)}>Close</button>
+                            <DiaperRecord babyId={baby.id} onComplete={handleAddDiaper}/>
+                        </div>
+                    </Modal>
                 </div>
                 <div className="flex flex-col m-10">
                     <Card 
@@ -241,13 +437,23 @@ export default function BabyOvervirew(){
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>
-                                { renderSleepTimes() }
+                                { renderTummyTimes() }
                             </div>
                             <div className="text-center">
-                                <AddElementButton onClick={() => {}} center />
+                                <AddElementButton onClick={handleGoToTummyTimeModal} center />
                             </div>
                         </div>
                     </Card>
+                    <Modal 
+                        isOpen={addTummyTimeModalIsOpen}
+                        onRequestClose={() => setAddTummyTimeModalIsOpen(false)}
+                        contentLabel="Add diaper record"
+                    >
+                        <div className="ml-30 mt-30 mr-30">
+                            <button className="x" onClick={() => setAddTummyTimeModalIsOpen(false)}>Close</button>
+                            <TummyTimeRecord babyId={baby.id} onComplete={handleAddTummyTime}/>
+                        </div>
+                    </Modal>
                 </div>
                 <div className="flex flex-col m-10">
                     <Card 
@@ -256,13 +462,23 @@ export default function BabyOvervirew(){
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>
-                                { renderSleepTimes() }
+                                { renderPumps() }
                             </div>
                             <div className="text-center">
-                                <AddElementButton onClick={() => {}} center />
+                                <AddElementButton onClick={handleGoToPumpModal} center />
                             </div>
                         </div>
                     </Card>
+                    <Modal 
+                        isOpen={addPumpModalIsOpen}
+                        onRequestClose={() => setAddPumpModalIsOpen(false)}
+                        contentLabel="Add pump record"
+                    >
+                        <div className="ml-30 mt-30 mr-30">
+                            <button className="x" onClick={() => setAddPumpModalIsOpen(false)}>Close</button>
+                            <PumpRecord babyId={baby.id} onComplete={handleAddPump}/>
+                        </div>
+                    </Modal>
                 </div>
                 <div className="flex flex-col m-10">
                     <Card 
@@ -271,13 +487,23 @@ export default function BabyOvervirew(){
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>
-                                { renderSleepTimes() }
+                                { renderMeasurements() }
                             </div>
                             <div className="text-center">
-                                <AddElementButton onClick={() => {}} center />
+                                <AddElementButton onClick={handleGoToMeasurementModal} center />
                             </div>
                         </div>
                     </Card>
+                    <Modal 
+                        isOpen={addMeasurementModalIsOpen}
+                        onRequestClose={() => setAddMeasurementModalIsOpen(false)}
+                        contentLabel="Add measurement record"
+                    >
+                        <div className="ml-30 mt-30 mr-30">
+                            <button className="x" onClick={() => setAddMeasurementModalIsOpen(false)}>Close</button>
+                            <MeasurementRecord babyId={baby.id} onComplete={handleAddMeasurement}/>
+                        </div>
+                    </Modal>
                 </div>
                 <div className="flex flex-col m-10">
                     <Card 
@@ -286,13 +512,23 @@ export default function BabyOvervirew(){
                     >
                         <div className="ph-20 w-175 text-center">
                             <div>
-                                { renderSleepTimes() }
+                                { renderEvents() }
                             </div>
                             <div className="text-center">
-                                <AddElementButton onClick={() => {}} center />
+                                <AddElementButton onClick={handleGoToEventModal} center />
                             </div>
                         </div>
                     </Card>
+                    <Modal 
+                        isOpen={addEventModalIsOpen}
+                        onRequestClose={() => setAddEventModalIsOpen(false)}
+                        contentLabel="Add event record"
+                    >
+                        <div className="ml-30 mt-30 mr-30">
+                            <button className="x" onClick={() => setAddEventModalIsOpen(false)}>Close</button>
+                            <EventRecord babyId={baby.id} onComplete={handleAddEvent}/>
+                        </div>
+                    </Modal>
                 </div>
             </div>
         </div>

@@ -36,6 +36,24 @@ label {
   margin-bottom: 2px;
 }
 
+.input-dark {
+  all: unset;
+  border: none;
+  border-bottom: 1px solid #f0f0f0;
+  border-radius: 2px;
+  padding: 1px;
+  width: 150px;
+  height: 20px;
+  margin-bottom: 5px;
+  color: #f0f0f0;
+  transition: 0.2s;
+}
+
+.input-dark:focus {
+  border-bottom: 3px solid #f0f0f0;
+  background-color: #36454F;
+}
+
 input {
   all: unset;
   border: none;
@@ -52,6 +70,18 @@ input {
 input:focus{
   border-bottom: 3px solid rgb(59, 0, 3);
   background-color: #f0f0f0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.dark-link{
+  color: white;
+}
+
+.italic {
+  font-family: 'Kalam', sans-serif;
 }
 
 textarea {
@@ -82,6 +112,10 @@ table {
 
 .danger {
   color:rgb(158, 0, 8);
+}
+
+.danger-dark {
+  color:rgb(247, 1, 13)
 }
 
 .btn {
@@ -182,6 +216,12 @@ table {
   cursor: pointer;
 }
 
+.dark-landing{
+  background-color: #36454F;
+  height: 100vh;
+  color: rgb(233, 232, 232);
+}
+
 .page {
   padding: 20px;
   padding-top: 40px;
@@ -215,6 +255,23 @@ table {
   text-decoration: none;
   outline: none;
   border: none;
+}
+
+.btn-dark {
+  background-color:rgb(185, 185, 185);
+  border-radius: 2px;
+  display: block;
+  color:rgb(44, 44, 44);
+  text-decoration: none;
+  padding: 8px 16px;
+  outline: none;
+  border: none;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.btn-dark:hover{
+  background-color: rgb(231, 229, 229);
 }
 
 #logout {
@@ -309,8 +366,20 @@ table {
   margin-top: 0px;
 }
 
+.mt-10{
+  margin-top: 10px;
+}
+
+.mt-5 {
+  margin-top: 5px;
+}
+
 .m-10 {
   margin: 10px;
+}
+
+.m-15 {
+  margin: 15px;
 }
 
 .m-10p{
@@ -327,6 +396,10 @@ table {
 
 .p-4{
   padding: 4px;
+}
+
+.p-6{
+  padding: 6px;
 }
 
 .p-10{
@@ -420,16 +493,49 @@ table {
 
 .baby-overview-hdr {
   text-align: center;
+  font-weight: bold;
+  margin-bottom: 60px;
+  font-size: 2.3em;
 }
 
 .baby-summary-table {
   width: 40%;
+  border-right: 2px solid #00426eec;
+  /* border-left: 2px solid #00426eec; */
+}
+
+.baby-summary-table th{
+  padding-left: 10px;
+}
+
+.baby-summary-table td{
+  text-align: right;
+  padding-right: 10px;
+  padding-bottom: 2px;
+}
+
+.p-5{
+  padding: 5px
+}
+
+.border-top {
+  border-top: 1px solid rgb(44,44,44);
+}
+
+.border-blue {
+  border-color: rgb(220, 231, 250);
 }
 
 .table-header {
   font-size: x-large;
   font-weight: bolder;
-  background: #888787ec;
+  /* background:rgb(44, 44, 44); */
+  /* color:rgb(228, 226, 226); */
+  /* border-right: 2px solid  #00426eec;  */
+  color: black; 
+  border-top: 5px solid #00426eec;
+  border-top-left-radius: 7px;
+  padding: 5px;
 }
 
 .edit-button:hover {
