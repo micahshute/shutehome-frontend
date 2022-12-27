@@ -5,6 +5,25 @@ export function parseUTCDate(dateString){
 
 }
 
+
+export function deepCopy(obj) {
+    if(Array.isArray(obj)){
+        const newArr = []
+        obj.forEach(el => {
+            newArr.push(deepCopy(el))
+        })
+        return newArr
+    }else if (typeof obj === 'object') {
+        const newObj = {}
+        Object.keys(obj).forEach(key => {
+            newObj[key] = deepCopy(obj[key])
+        })
+        return newObj
+    } else {
+        return obj
+    }
+}
+
 export function getFormattedDateTime(dateString){
     const date = new Date(dateString)
     const year = date.getFullYear()
@@ -15,12 +34,20 @@ export function getFormattedDateTime(dateString){
     return `${month}/${day}/${year} ${pad(hour, 2)}:${pad(minutes, 2)}`
 }
 
-export function getDate(dateString){
-    const date = new Date(dateString)
+export function normalizeDateStrOrObj(dateArg){
+    if(typeof dateArg === 'string'){
+        return new Date(dateArg)
+    }
+    return dateArg
+}
+
+export function getDate(dateArg){
+    const date = normalizeDateStrOrObj(dateArg)
     const month = date.getMonth() + 1
     const day = date.getDate()
     return `${month}/${day}`
 }
+
 
 export function getFullDate(dateString){
     const shortDate = getDate(dateString)

@@ -98,12 +98,32 @@ export class Day extends DateUnit {
         return new this(startDate)
     }
 
+    static diff(day1, day2){
+        const range = new DateRange(day1.startTime, day2.startTime)
+        return Math.round(range.durationMinutes() / (60 * 24))
+    }
+
     constructor(date){
         const startTime = DateMath.beginningOfDay(date)
         const endTime = DateMath.endOfDay(date)
         super(startTime, endTime)
     }
 
+    valueOf(){
+        return this.startTime
+    }
+
+    fastForward(numDays){
+        return (new Day(Day.add(numDays).to(this.startTime)))
+    }
+
+    reverse(numDays){
+        return (new Day(Day.subtract(numDays).from(this.startTime)))
+    }
+
+    isEql(day){
+        return day.toString() === this.toString()
+    }
 
     toString(){
         return `${this.startTime.getTime()}::${this.endTime.getTime()}`

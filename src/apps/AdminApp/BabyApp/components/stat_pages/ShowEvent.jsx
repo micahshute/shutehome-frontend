@@ -8,6 +8,8 @@ import Card from "../../../../../lib/Card"
 import { getAgeStrAtDate, getFullDate } from "../../../../../lib/helpers/helpers"
 import Loader from "../../../../../lib/Loader"
 import { AiFillEdit } from "react-icons/ai"
+import EventRecord from "../forms/EventRecord"
+import Modal from 'react-modal';
 
 export default function ShowEvent(){
 
@@ -26,10 +28,6 @@ export default function ShowEvent(){
         reload,
     } = useRest(`/babies/${baby.id}/events`, 'get', null, {useTimezone: true})
 
-    const openEditModal = () => {
-
-    }
-
     const renderEvent = (event) => {
         const cardHeader = (
             <>
@@ -42,24 +40,69 @@ export default function ShowEvent(){
             </>
         )
         return (
-            <Card header={cardHeader}>
-                <div>
-                    <h2>Holden was {getAgeStrAtDate(new Date(baby.birthdate), new Date(event.time))} old</h2>
-                </div>
-                <label>Notes</label>
-                <p className="italic">{event.notes}</p> 
-            </Card>
+            <div className="mt-30" key={event.id}>
+                <Card header={cardHeader}>
+                    <div>
+                        <h2>Holden was {getAgeStrAtDate(new Date(baby.birthdate), new Date(event.time))} old</h2>
+                    </div>
+                    {
+                        event.notes && event.notes.length > 0 && (
+                            <>
+                                <label>Notes</label>
+                                <p className="italic">{event.notes}</p> 
+                            </>
+                        )
+                    }
+                </Card>
+            </div>
         )
     }
 
+    const handleUpdate = () => {
+        setModalIsOpen(false)
+        setEventRecordToEdit(null)
+        reload()
+    }
+
+    const openEditModal = datum => {
+        setModalIsOpen(true)
+        setEventRecordToEdit(datum)
+    }
+
     const openCreateModal = () => {
-        setMakeNewRecord()
-        setModalIsOpen()
+        setMakeNewRecord(true)
+        setModalIsOpen(true)
+    }
+
+    const handleCloseModal = () => {
+        setMakeNewRecord(false)
+        setModalIsOpen(false)
+        setEventRecordToEdit(null)
+    }
+
+
+    const modalShouldBeRendered = () => {
+        return !!((modalIsOpen && eventRecordToEdit) || (modalIsOpen && makeNewRecord))
+    }
+
+    const renderEditModal = () => {
+        return(
+            <Modal
+                isOpen={modalShouldBeRendered()} 
+                onRequestClose={handleCloseModal}
+                contentLabel="Update event record"
+            >
+                <div>
+                    <button className="x" onClick={handleCloseModal}>Close</button>
+                    <EventRecord babyId={baby.id} onComplete={handleUpdate} eventRecord={eventRecordToEdit} />
+                </div>
+            </Modal>
+        ) 
     }
 
     if(loading){
         return (
-            <div classname="page">
+            <div className="page">
                 <Loader />
             </div>
         )
@@ -91,6 +134,7 @@ export default function ShowEvent(){
             <div className="mt-30">
                 { data.map(event => renderEvent(event))}
             </div>
+            { renderEditModal() }
         </div>
     )
 }

@@ -51,7 +51,7 @@ export default function Login(){
                     <img src={iconHome} />
                 </div>
                 <h1>ShuteHome</h1>
-                <div clasName="mt-10">
+                <div className="mt-10">
                     <label for="username">Username</label>
                     <input
                         className="input-dark"

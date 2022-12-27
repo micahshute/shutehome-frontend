@@ -25,7 +25,6 @@ export default function UserProvider({ LoginApp, children}){
   }, [data, error, loading, userData])
 
   const noUser = !userData?.user || Object.keys(userData.user).length === 0
-
   const renderChildren = () => {
     if(loading){
       return (

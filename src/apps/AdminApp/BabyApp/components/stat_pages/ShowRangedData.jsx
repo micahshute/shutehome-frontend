@@ -1,3 +1,4 @@
+// TODO: USE THIS TO GENERALIZE SIMILAR PAGES (e.g. sleep, tummy times)
 import { useMemo, useState } from "react"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
@@ -6,14 +7,14 @@ import { getDate, getTime, round } from "../../../../../lib/helpers/helpers"
 import { Day } from "../../../../../lib/helpers/time/dateMath"
 import { DateRange } from "../../../../../lib/helpers/time/dateRange"
 import Loader from "../../../../../lib/Loader"
-import RangedEventDayChart from "../charts/RangedEventDayChart"
+import SleepDayChart from "../charts/RangedEventDayChart"
 import { useNavigate, useParams } from "react-router-dom"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
 import SleepRecord from "../forms/SleepRecord"
 import AddElementButton from "../../../../../lib/AddElementButton"
 
-export default function ShowSleep(){
+export default function ShowRangedData({ urlResourceName }){
 
     const { id } = useParams()
     const { babies } = useUser().user
@@ -30,10 +31,9 @@ export default function ShowSleep(){
         error,
         loading,
         reload
-    } = useRest(`/babies/${baby.id}/sleeps?forDateRange=2weeks`, 'get', null, { useTimezone: true})
+    } = useRest(`/babies/${baby.id}/${urlResourceName}?forDateRange=2weeks`, 'get', null, { useTimezone: true})
 
-    // NOTE: Graphs displayed on this page assume non-overlapping sleeps
-
+    // NOTE: Graphs displayed on this page assume non-overlapping events
 
     if(!data || loading){
         return (
@@ -57,14 +57,14 @@ export default function ShowSleep(){
         return day.toString()
     })
 
-    let totalSleepTimeMinutes = 0
+    let totalRangeTimeMinutes = 0
 
-    const sortedSleeps = data.map(sleepDatum => {
-        const sleepDateRange = DateRange.fromString(sleepDatum.start_time, sleepDatum.end_time)
-        totalSleepTimeMinutes += sleepDateRange.durationMinutes()
+    const sortedData = data.map(datum => {
+        const dateRange = DateRange.fromString(datum.start_time, datum.end_time)
+        totalRangeTimeMinutes += dateRange.durationMinutes()
         return {
-            dateRange: sleepDateRange,
-            data: sleepDatum
+            dateRange: dateRange,
+            data: datum
         }
     }).sort((a, b) => {
         if(a.dateRange.startTime < b.dateRange.startTime){
@@ -75,56 +75,56 @@ export default function ShowSleep(){
         return 0
     })
 
-    // Sleeps date ranges are sorted by start date, with the most
+    // Date ranges are sorted by start date, with the most
     // recent one first. The days in the variable "days" from today 
     // towards the past (the most recent day first). As we "reduce"
     // through "days" we will iterate them in order, and assign 
     // date ranges to days, keeping track of the index of the date
     // ranges we are checking against the days. Since they are sorted
     // in the same way, we can do a single pass through both to bucket
-    // sleeps into days
+    // data into days
 
-    let currSleepIndex = 0
-    const daysToDaySleepTotalMinutes = {}
+    let currIndex = 0
+    const daysToDayEventTotalMinutes = {}
 
     const daysToApplicableDateRanges = days.reduce((mem, dayStr) => {
         const dayOfConcern = Day.fromString(dayStr)
-        let totalSleepMinutes = 0
-        while(currSleepIndex < sortedSleeps.length && !sortedSleeps[currSleepIndex].dateRange.isAfter(dayOfConcern)){
-            if(sortedSleeps[currSleepIndex].dateRange.includes(dayOfConcern)){
+        let totalEventMinutes = 0
+        while(currIndex < sortedData.length && !sortedData[currIndex].dateRange.isAfter(dayOfConcern)){
+            if(sortedData[currIndex].dateRange.includes(dayOfConcern)){
                 if(mem[dayStr]){
                     // NOTE UNSHIFT IN JS DOESN'T SEEM TO BE O(1) :(
                     // dateRanges need to be ordred earlier->later
                     // since these are going into charts and tables
                     // Refactor could be using push then reversing
                     // I don't think we have enough values to care here
-                    mem[dayStr].unshift(currSleepIndex)
+                    mem[dayStr].unshift(currIndex)
                 }else{
-                    mem[dayStr] = [currSleepIndex]
+                    mem[dayStr] = [currIndex]
                 }
-                const sleepDateRange = sortedSleeps[currSleepIndex].dateRange
+                const dateRange = sortedData[currIndex].dateRange
                 const nextDay = new Day(Day.add(1).to(dayOfConcern.startTime))
                 const prevDay = new Day(Day.subtract(1).from(dayOfConcern.endTime))
-                const doesSleepExtendPastDay = nextDay.includes(sleepDateRange)
-                const doesSleepExtendToPrevDay = prevDay.includes(sleepDateRange)
-                if(doesSleepExtendPastDay){
-                    let dateRangeOfConcern = new DateRange(sleepDateRange.startTime, dayOfConcern.endTime)
-                    totalSleepMinutes += dateRangeOfConcern.durationMinutes()
-                }else if(doesSleepExtendToPrevDay){
-                    let dateRangeOfConcern = new DateRange(dayOfConcern.startTime, sleepDateRange.endTime)
-                    totalSleepMinutes += dateRangeOfConcern.durationMinutes()
+                const doesExtendPastDay = nextDay.includes(dateRange)
+                const doesExtendToPrevDay = prevDay.includes(dateRange)
+                if(doesExtendPastDay){
+                    let dateRangeOfConcern = new DateRange(dateRange.startTime, dayOfConcern.endTime)
+                    totalEventMinutes += dateRangeOfConcern.durationMinutes()
+                }else if(doesExtendToPrevDay){
+                    let dateRangeOfConcern = new DateRange(dayOfConcern.startTime, dateRange.endTime)
+                    totalEventMinutes += dateRangeOfConcern.durationMinutes()
                 }else{
-                    totalSleepMinutes += sleepDateRange.durationMinutes()
+                    totalEventMinutes += dateRange.durationMinutes()
                 }
             }
-            currSleepIndex++
+            currIndex++
         }
-        daysToDaySleepTotalMinutes[dayStr] = totalSleepMinutes
-        if(currSleepIndex > sortedSleeps.length){
+        daysToDayEventTotalMinutes[dayStr] = totalEventMinutes
+        if(currIndex > sortedData.length){
             return mem
         }
         // Do this for when a sleep extends over 2 days (eg a normal night's sleep)
-        if(currSleepIndex > 0) { currSleepIndex-- }
+        if(currIndex > 0) { currIndex-- }
         return mem
     }, {})    
 
@@ -132,13 +132,13 @@ export default function ShowSleep(){
     const renderCardForDay = dayStr => {
         const shouldRender = (daysToApplicableDateRanges[dayStr] || []).length > 0
         if(shouldRender){
-            const totalSleepMinutes = daysToDaySleepTotalMinutes[dayStr]
-            const sleepHours = round(totalSleepMinutes / 60, 2)
+            const totalEventMinutes = daysToDayEventTotalMinutes[dayStr]
+            const eventHours = round(totalEventMinutes / 60, 2)
             return (
                 <Card header={getDate(Day.fromString(dayStr).startTime)}>
                     {renderChartForDay(dayStr)}
                     {renderTableForDay(dayStr)}
-                    <p>24 hr total: {sleepHours} hrs</p>
+                    <p>24 hr total: {eventHours} hrs</p>
                 </Card>
             )
         }
@@ -147,14 +147,14 @@ export default function ShowSleep(){
     }
 
     const renderChartForDay = (dayStr) => {
-        const sleepDataIndices = daysToApplicableDateRanges[dayStr] || []
-        const sleepRangeAndData = sleepDataIndices.map(i => sortedSleeps[i])//sortedSleeps[sleepDataIndex]
-        return <RangedEventDayChart rangeData={sleepRangeAndData} dayStr={dayStr} />
+        const dataIndices = daysToApplicableDateRanges[dayStr] || []
+        const rangeAndData = dataIndices.map(i => sortedData[i])
+        return <SleepDayChart sleepData={rangeAndData} dayStr={dayStr} />
     }
 
     const renderTableForDay = dayStr => {
-        const sleepDataIndices = daysToApplicableDateRanges[dayStr] || []
-        const sleepRangeAndData = sleepDataIndices.map(i => sortedSleeps[i])
+        const dataIndices = daysToApplicableDateRanges[dayStr] || []
+        const rangeAndData = dataIndices.map(i => sortedSleeps[i])
         return (
             <table className="text-left text-sm">
                 <thead>
@@ -166,14 +166,14 @@ export default function ShowSleep(){
                     </tr>
                 </thead>
                 <tbody>
-                    { sleepRangeAndData.map(sleepDatum => (
-                        <tr key={sleepDatum.id}>
-                            <td className="p-6">{getTime(sleepDatum.data.start_time)}</td>
-                            <td className="p-6">{getTime(sleepDatum.data.end_time)}</td>
-                            <td className="p-6">{round(sleepDatum.dateRange.durationMinutes() / 60, 2)} hrs</td>
+                    { rangeAndData.map(datum => (
+                        <tr key={datum.id}>
+                            <td className="p-6">{getTime(datum.data.start_time)}</td>
+                            <td className="p-6">{getTime(datum.data.end_time)}</td>
+                            <td className="p-6">{round(datum.dateRange.durationMinutes() / 60, 2)} hrs</td>
                             <td className="p-6"><AiFillEdit 
                                 style={{cursor: 'pointer'}}
-                                onClick={() => openEditModal(sleepDatum.data)}
+                                onClick={() => openEditModal(datum.data)}
                             /></td>
                         </tr>
                         )
@@ -195,13 +195,13 @@ export default function ShowSleep(){
 
     const handleUpdate = () => {
         setModalIsOpen(false)
-        setSleepRecordToEdit(null)
+        setRecordToEdit(null)
         reload()
     }
 
     const openEditModal = datum => {
         setModalIsOpen(true)
-        setSleepRecordToEdit(datum)
+        setRecordToEdit(datum)
     }
 
     const openCreateModal = () => {
@@ -212,11 +212,11 @@ export default function ShowSleep(){
     const handleCloseModal = () => {
         setMakeNewRecord(false)
         setModalIsOpen(false)
-        setSleepRecordToEdit(null)
+        setRecordToEdit(null)
     }
 
     const modalShouldBeRendered = () => {
-        return !!((modalIsOpen && sleepRecordToEdit) || (modalIsOpen && makeNewRecord))
+        return !!((modalIsOpen && recordToEdit) || (modalIsOpen && makeNewRecord))
     }
 
 
@@ -229,14 +229,14 @@ export default function ShowSleep(){
             >
                 <div>
                     <button className="x" onClick={handleCloseModal}>Close</button>
-                    <SleepRecord babyId={baby.id} onComplete={handleUpdate} sleepRecord={sleepRecordToEdit} />
+                    <SleepRecord babyId={baby.id} onComplete={handleUpdate} sleepRecord={recordToEdit} />
                 </div>
             </Modal>
         ) 
     }
 
-    const numberOfDaysWithData = Object.values(daysToDaySleepTotalMinutes).filter(mins => mins && mins > 0).length
-    const averageHoursPerDay = round((totalSleepTimeMinutes / 60) / numberOfDaysWithData, 2)
+    const numberOfDaysWithData = Object.values(daysToDayEventTotalMinutes).filter(mins => mins && mins > 0).length
+    const averageHoursPerDay = round((totalEventTimeMinutes / 60) / numberOfDaysWithData, 2)
 
     return (
         <div className="page">

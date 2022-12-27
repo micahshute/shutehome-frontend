@@ -14,10 +14,10 @@ import {
     Area
 } from 'recharts'
 
-export default function SleepDayChart({ sleepData, dayStr, width='100%' }){
+export default function RangedEventDayChart({ rangeData, dayStr, width='100%' }){
 
     const day = Day.fromString(dayStr)
-    const sleepRanges = sleepData.map(sleepDatum => sleepDatum.dateRange)
+    const ranges = rangeData.map(datum => datum.dateRange)
     const minutes = Array.from({length: (4 * 24)}, (x, i) => i * 15)
     const data = minutes.map(minute => {
         const hour = Number.parseInt(minute / 60);
@@ -29,7 +29,7 @@ export default function SleepDayChart({ sleepData, dayStr, width='100%' }){
             hour,
             hourMinute
         )
-        const value = sleepRanges.some(range => range.includes(date)) ? 1 : 0
+        const value = ranges.some(range => range.includes(date)) ? 1 : 0
         return {
             value,
             name: `${pad(hour, 2)}`
@@ -47,7 +47,4 @@ export default function SleepDayChart({ sleepData, dayStr, width='100%' }){
             </AreaChart>
         </ResponsiveContainer>
     )
-
-
-
 }

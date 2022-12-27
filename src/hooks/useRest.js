@@ -54,7 +54,7 @@ export function useRest(url, method="get", body=null, options={useTimezone: fals
 
         makeRequest()
 
-    }, [body, method, url, shouldReload])
+    }, [shouldReload])
 
     const reload = () => {
         setShouldReload(true)

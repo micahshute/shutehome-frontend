@@ -27,7 +27,15 @@ export default function DiaperRecord({babyId, onComplete, diaperRecord=null}){
         return NONE
     }
 
-    const initialTime = diaperRecord?.time || new Date()
+    const getInitialDate = () => {
+        if(!diaperRecord){
+            return new Date()
+        }
+
+        return new Date(diaperRecord.time)
+    }
+
+    const initialTime = getInitialDate()
     const initialContents = getInitialContents()
     const initialColor = diaperRecord?.color || ''
     const initialNotes = diaperRecord?.notes || ''

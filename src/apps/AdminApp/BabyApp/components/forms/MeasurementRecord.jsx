@@ -16,15 +16,12 @@ export default function MeasurementRecord({babyId, onComplete, measurementRecord
 
     const getInitialType = () => {
         if(!measurementRecord) { return WEIGHT }
-        if(measurementRecord.weight) { return WEIGHT }
-        if(measurementRecord.height) { return HEIGHT }
-        if(measurementRecord.head_circumference) { return HEAD_CIRCUMFERENCE }
-        return WEIGHT
+        return measurementRecord.category
     }
 
     const getInitialValue = () => {
         if(!measurementRecord) { return 0 }
-        return measurementRecord.weight || measurementRecord.height || measurementRecord.head_circumference
+        return measurementRecord.value
     }
 
     const initialType = getInitialType()
@@ -47,9 +44,9 @@ export default function MeasurementRecord({babyId, onComplete, measurementRecord
     }
 
     const handleChangeOz = e => {
-        const oz = Number.parseInt(e.target.value) || 0
+        const oz = Number.parseFloat(e.target.value) || 0
         if(oz >= 16 || oz < 0) {
-            setValue(Number.parseInt(value))
+            setValue(Number.parseFloat(value))
         }else{
             const lbs = Number.parseInt(value)
             setValue(lbs + (oz / 16))
@@ -105,7 +102,7 @@ export default function MeasurementRecord({babyId, onComplete, measurementRecord
                         </div>
                         <div>
                             <label for="ounces">Ounces</label>
-                            <input type="text" onChange={handleChangeOz} value={oz} />
+                            <input type="number" onChange={handleChangeOz} value={oz} />
                         </div>
                     </>
                 )
