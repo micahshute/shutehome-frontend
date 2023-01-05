@@ -8,7 +8,7 @@ import Loader from '../../../../lib/Loader'
 import { useToasts } from "react-toast-notifications"
 import { useEffect } from 'react'
 import { Timer } from './Timer'
-import { round } from '../../../../lib/helpers/helpers'
+import { getDate, getVerboseDate, round } from '../../../../lib/helpers/helpers'
 import { useState } from 'react'
 import Card from '../../../../lib/Card'
 
@@ -103,7 +103,8 @@ export default function Dashboard(){
     const renderDashboardSummary = () => {
         return (
             <div className="mt-30">
-                <Card header={`So far today ${baby.name} has...`}>
+                <Card header={`${getVerboseDate(new Date())}`}>
+                    <h3>So far today {baby.name} has...</h3>
                     <ul>
                         <li>Eaten {dayStatsData.feeds.total_feeds} times</li>
                         { dayStatsData.feeds.has_breastfed && <li>Breastfed for {dayStatsData.feeds.total_breastfeed_time} mins</li> }

@@ -5,6 +5,40 @@ export function parseUTCDate(dateString){
 
 }
 
+export const dayMap = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+]
+
+export const monthMap = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+]
+
+export function getVerboseDate(dateArg){
+    const date = normalizeDateStrOrObj(dateArg)
+    const dayOfWeek = date.getDay()
+    const weekdayFormatted = dayMap[dayOfWeek]
+    const monthFormatted = monthMap[date.getMonth()]
+    const dayOfMonth = date.getDate()
+    return `${weekdayFormatted}, ${dayOfMonth} ${monthFormatted}`
+}
 
 export function deepCopy(obj) {
     if(Array.isArray(obj)){
@@ -54,7 +88,6 @@ export function getFullDate(dateString){
     const date = new Date(dateString)
     return `${shortDate}/${date.getFullYear()}`
 }
-
 
 export function getTimeDiff(dateStr1, dateStr2) {
     const d1 = new Date(dateStr1)
