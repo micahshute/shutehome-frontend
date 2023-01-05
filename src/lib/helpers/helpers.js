@@ -55,6 +55,7 @@ export function getFullDate(dateString){
     return `${shortDate}/${date.getFullYear()}`
 }
 
+
 export function getTimeDiff(dateStr1, dateStr2) {
     const d1 = new Date(dateStr1)
     const d2 = new Date(dateStr2)

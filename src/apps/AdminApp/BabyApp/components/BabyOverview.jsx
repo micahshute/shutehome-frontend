@@ -14,6 +14,7 @@ import TummyTimeRecord from './forms/TummyTimeRecord'
 import EventRecord from './forms/EventRecord'
 import MeasurementRecord from "./forms/MeasurementRecord";
 import PumpRecord from "./forms/PumpRecord";
+import Dashboard from "./Dashboard";
 
 
 
@@ -352,6 +353,13 @@ export default function BabyOvervirew(){
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div className="flex justify-center align-center mt-30">
+                <button 
+                    className="btn btn-primary btn-large bold"
+                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}/dashboard`)}
+                >Dashboard</button>
             </div>
 
             <div className="flex flex-start mt-30 flex-wrap align-stretch">

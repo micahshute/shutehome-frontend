@@ -153,9 +153,9 @@ export default function ShowDiaper(){
     }, {})).sort((dayData1, dayData2) => {
         const date1 = new Date(dayData1[0].time)
         const date2 = new Date(dayData2[0].time)
-        if(date1 > date2){
+        if(date1 < date2){
             return 1
-        }else if(date1 < date2){
+        }else if(date1 > date2){
             return -1
         }
         return 0

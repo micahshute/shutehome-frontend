@@ -7,6 +7,11 @@ export function useLazyRest(){
     const [data, setData] = useState(null)
     const [error, setError] = useState(null)
 
+    const reset = () => {
+        setData(null)
+        setLoading(false)
+        setError(null)
+    }
 
     let call = async (url, method="get", body=null, options={useTimezone: false}) => {
         setLoading(true)
@@ -54,5 +59,6 @@ export function useLazyRest(){
         error,
         loading,
         call,
+        reset
     }
 }

@@ -21,7 +21,9 @@ export default function BabyCard({baby, gotoEdit}){
     }
 
     const handleDeleteBaby = (e) => {
+        const shouldDelete = window.confirm("Are you sure you want to delete this baby?")
         e.stopPropagation()
+        if(!shouldDelete) { return }
         call(`/babies/${baby.id}`, 'delete')
     }
 
