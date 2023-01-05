@@ -5,16 +5,21 @@ import { pad } from "../../../../lib/helpers/helpers";
 
 export function Timer({startTime}){
 
-    const now = new Date()
-    const diffMs = now - startTime
-    const [seconds, setSeconds] = useState(Math.floor(diffMs / 1000))
+    const getSecondsFromStartTime = () => {
+        const now = new Date()
+        const diffMs = now - startTime
+        return Math.floor(diffMs / 1000)
+    }
+
+    const [seconds, setSeconds] = useState(getSecondsFromStartTime())
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setSeconds(prevSeconds => prevSeconds + 1)
+            setSeconds(getSecondsFromStartTime())
         }, 1000)
         return () => clearInterval(interval)
     }, [])
+
 
     const formatTimeDiff = () => {
         const minutes = Math.floor(seconds / 60)

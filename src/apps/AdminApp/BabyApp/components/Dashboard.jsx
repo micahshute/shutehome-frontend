@@ -109,7 +109,8 @@ export default function Dashboard(){
                         <li>Eaten {dayStatsData.feeds.total_feeds} times</li>
                         { dayStatsData.feeds.has_breastfed && <li>Breastfed for {dayStatsData.feeds.total_breastfeed_time} mins</li> }
                         { dayStatsData.feeds.has_bottlefed && <li>Eaten {dayStatsData.feeds.total_bottlefed_amount } oz.</li>}
-                        <li>Slept {dayStatsData.sleeps.total_sleeps} times for a total of {dayStatsData.sleeps.total_sleep_time_hours} hours</li>
+                        <li>Slept {dayStatsData.sleeps.total_night_sleep_time} hours last night</li>
+                        <li>Has napped {dayStatsData.sleeps.total_naps} times for a total of {dayStatsData.sleeps.total_nap_hours} hours</li>
                         <li>Been changed {dayStatsData.diapers.total_diaper_changes} times, with {dayStatsData.diapers.total_poops} poops and {dayStatsData.diapers.total_pees} pees</li>
                         <li>Done {dayStatsData.tummy_times.total_tummy_time_minutes} minutes of tummy time in {dayStatsData.tummy_times.total_tummy_times} sessions </li>
                     </ul>
