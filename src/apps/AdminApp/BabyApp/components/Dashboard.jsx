@@ -320,6 +320,26 @@ export default function Dashboard(){
     const renderHasNoEventDashboard = () => {
         return (
             <div className='text-center'>
+                <div className="flex space-around border-bottom">
+                    {
+                        dayStatsData.feeds.last_feed_time && (
+                            <div className='w-80'>
+                                <p>Time since last feed</p>
+                                <div className="border-right">
+                                    <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} />
+                                </div>
+                            </div>
+                        )
+                    }
+                    {
+                        dayStatsData.sleeps.last_sleep_time && (
+                            <div className='w-80'>
+                                <p>Time since last sleep</p>
+                                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} />
+                            </div>
+                        )
+                    }
+                </div>
                 <div className="event-button-container">
                     <button 
                         className="btn btn-event"

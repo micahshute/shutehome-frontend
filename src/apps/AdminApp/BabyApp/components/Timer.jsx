@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { pad } from "../../../../lib/helpers/helpers";
 
 
-export function Timer({startTime}){
+export function Timer({startTime, skinny}){
 
     const getSecondsFromStartTime = () => {
         const now = new Date()
@@ -31,7 +31,7 @@ export function Timer({startTime}){
     }
 
     return (
-        <div className="timer">
+        <div className={skinny ? 'skinny-timer': 'timer'}>
             <p className="bold">{formatTimeDiff()}</p>
         </div>
     )
