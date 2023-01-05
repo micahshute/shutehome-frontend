@@ -48,7 +48,7 @@ export default function Dashboard(){
 
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === babyId.toString()), [babies, babyId])
     const { data: fetchEventData, loading: fetchEventLoading, error: fetchEventError, reload: refetchCurrentEvent } = useRest(`/babies/${babyId}/current_event`, 'GET')
-    const { data: dayStatsData, loading: dayStatsLoading, error: dayStatsError, reload: refetchDayStats } = useRest(`/babies/${babyId}/day_stats`, 'GET')
+    const { data: dayStatsData, loading: dayStatsLoading, error: dayStatsError, reload: refetchDayStats } = useRest(`/babies/${babyId}/day_stats`, 'GET', null, { useTimezone: true })
     const { data: createEventData, loading: createEventLoading, error: createEventError, call: createEventCall, reset: createEventReset} = useLazyRest()
     const { data: currentEventData, loading: currentEventLoading, error: currentEventError, call: callCurrentEvent } = useLazyRest()
 
