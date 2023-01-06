@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import DateTimePicker from 'react-datetime-picker'
 import { useToasts } from 'react-toast-notifications'
 import { useLazyRest } from '../../../../../hooks/useLazyRest'
 import LoadingButton from '../../../../../lib/LoadingButton'
+import { MDDateTimePicker } from '../DatePicker'
 
 export default function SleepRecord({babyId, onComplete, sleepRecord=null}){
 
@@ -64,11 +64,11 @@ export default function SleepRecord({babyId, onComplete, sleepRecord=null}){
         <div>
             <div>
                 <label for="startTime">Start Time</label>
-                <DateTimePicker onChange={setStartTime} value={startTime} />
+                <MDDateTimePicker onChange={setStartTime} value={startTime} />
             </div>
             <div>
                 <label for="endTime">End Time</label>
-                <DateTimePicker onChange={setEndTime} value={endTime} />
+                <MDDateTimePicker onChange={setEndTime} value={endTime} />
             </div>
             <div>
                 <label for="notes">Notes</label>

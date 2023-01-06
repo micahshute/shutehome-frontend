@@ -1,10 +1,10 @@
 import { useEffect, useReducer, useState } from "react"
 import { useToasts } from 'react-toast-notifications'
-import DateTimePicker from 'react-datetime-picker'
 import { useLazyRest } from "../../../../hooks/useLazyRest"
 import LoadingButton from "../../../../lib/LoadingButton"
 import { useUser } from "../../../../hooks/useUser"
 import { round } from "../../../../lib/helpers/helpers"
+import { MDDateTimePicker } from "./DatePicker"
 
 export default function RegisterBaby( {closeModal, baby=null} ){
 
@@ -124,7 +124,7 @@ export default function RegisterBaby( {closeModal, baby=null} ){
             </div>
             <div className="register-baby-input">
                 <label for="birthday">Birthday</label>
-                <DateTimePicker onChange={setBirthdate} value={birthdate} />
+                <MDDateTimePicker onChange={setBirthdate} value={birthdate} />
             </div>
             <div className="register-baby-input">
                 <div>

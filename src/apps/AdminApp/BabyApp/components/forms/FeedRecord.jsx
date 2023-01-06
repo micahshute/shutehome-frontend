@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import DateTimePicker from 'react-datetime-picker'
 import { useToasts } from 'react-toast-notifications'
 import { useLazyRest } from '../../../../../hooks/useLazyRest'
 import LoadingButton from '../../../../../lib/LoadingButton'
+import { MDDateTimePicker } from '../DatePicker'
 
 const FEED_TYPES = {
     BREAST: 'breast',
@@ -176,7 +176,7 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
         <div>
             <div className="register-baby-input">
                 <label for="feedTime">Feed Time</label>
-                <DateTimePicker onChange={setFeedTime} value={feedTime} />
+                <MDDateTimePicker onChange={setFeedTime} value={feedTime} />
             </div>
             <div className="register-baby-input">
                 <label for="feedType">Feed Type</label>

@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { useState } from "react"
-import DateTimePicker from "react-datetime-picker"
 import { useToasts } from "react-toast-notifications"
 import { useLazyRest } from "../../../../../hooks/useLazyRest"
 import { weightFloatToPoundsOunces } from "../../../../../lib/helpers/helpers"
 import LoadingButton from "../../../../../lib/LoadingButton"
+import { MDDateTimePicker } from "../DatePicker"
 
 export default function MeasurementRecord({babyId, onComplete, measurementRecord=null}){
 
@@ -133,7 +133,7 @@ export default function MeasurementRecord({babyId, onComplete, measurementRecord
         <div>
             <div>
                 <label for="time">Time</label>
-                <DateTimePicker onChange={setTime} value={time} />
+                <MDDateTimePicker onChange={setTime} value={time} />
             </div>
             <div>
                 <label for="type">Measurement</label>

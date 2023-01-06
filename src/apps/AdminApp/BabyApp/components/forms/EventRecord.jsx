@@ -1,9 +1,9 @@
 import { useEffect } from "react"
 import { useState } from "react"
-import DateTimePicker from "react-datetime-picker"
 import { useToasts } from "react-toast-notifications"
 import { useLazyRest } from "../../../../../hooks/useLazyRest"
 import LoadingButton from "../../../../../lib/LoadingButton"
+import { MDDateTimePicker } from "../DatePicker"
 
 export default function EventRecord({babyId, onComplete, eventRecord=null}){
 
@@ -11,7 +11,7 @@ export default function EventRecord({babyId, onComplete, eventRecord=null}){
 
 
     const initialName = eventRecord?.name || ''
-    const initialTime = eventRecord?.time || new Date()
+    const initialTime = (new Date(eventRecord?.time)) || new Date()
     const initialNotes = eventRecord?.notes || ''
 
     const [name, setName] = useState(initialName)
@@ -62,7 +62,7 @@ export default function EventRecord({babyId, onComplete, eventRecord=null}){
             </div>
             <div>
                 <label for="time">Time</label>
-                <DateTimePicker onChange={setTime} value={time} />
+                <MDDateTimePicker onChange={setTime} value={time} />
             </div>
             <div>
                 <label for="notes">Notes</label>

@@ -31,10 +31,10 @@ export default function ShowEvent(){
     const renderEvent = (event) => {
         const cardHeader = (
             <>
-                <td className="p-6 float-left"><AiFillEdit 
+                <span className="p-6 float-left"><AiFillEdit 
                     style={{cursor: 'pointer'}}
                     onClick={() => openEditModal(event)}
-                /></td>
+                /></span>
                 <h2>{event.name} - {getFullDate(event.time)}</h2>
                 
             </>
@@ -118,6 +118,15 @@ export default function ShowEvent(){
 
     if(!data) { return null }
 
+    const sortedData = data.sort((a,b) => {
+        if(a.time < b.time){
+            return 1
+        }else if(a.time > b.time){
+            return -1
+        }
+        return 0
+    })
+
     return (
         <div className="page">
             <h1>{baby.name}'s Events</h1>
@@ -132,7 +141,7 @@ export default function ShowEvent(){
                 </div>
             </div>
             <div className="mt-30">
-                { data.map(event => renderEvent(event))}
+                { sortedData.map(event => renderEvent(event))}
             </div>
             { renderEditModal() }
         </div>

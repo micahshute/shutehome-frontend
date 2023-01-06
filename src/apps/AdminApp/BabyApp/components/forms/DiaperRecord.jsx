@@ -1,9 +1,9 @@
 import { useEffect } from "react"
 import { useState } from "react"
-import DateTimePicker from "react-datetime-picker"
 import { useToasts } from "react-toast-notifications"
 import { useLazyRest } from "../../../../../hooks/useLazyRest"
 import LoadingButton from "../../../../../lib/LoadingButton"
+import { MDDateTimePicker } from "../DatePicker"
 
 export default function DiaperRecord({babyId, onComplete, diaperRecord=null}){
     const LIQUID = 'liquid'
@@ -90,7 +90,7 @@ export default function DiaperRecord({babyId, onComplete, diaperRecord=null}){
         <div>
             <div>
                 <label for="startTime">Change Time</label>
-                <DateTimePicker onChange={setTime} value={time} />
+                <MDDateTimePicker onChange={setTime} value={time} />
             </div>
             <div>
                 <label for="contents">Contents</label>
