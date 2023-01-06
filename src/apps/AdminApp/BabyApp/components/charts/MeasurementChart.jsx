@@ -33,7 +33,7 @@ export default function MeasurementChart({ sortedMeasurementData, width='100%' }
         const lastDay = new Day(sortedData[dataSize - 1].time)
         const totalDays = Day.diff(firstDay, lastDay) + 2
         const dateIntegers = Array.from({length: totalDays}, (x, i) => i)
-        console.log(dateIntegers)
+        // console.log(dateIntegers)
         let dataIndex = 0
         const graphData = dateIntegers.map(dayInt => {
             const dayOfGraphDatapoint = firstDay.fastForward(dayInt)

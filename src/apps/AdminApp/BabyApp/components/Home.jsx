@@ -2,7 +2,7 @@ import BabyCard from "./BabyCard";
 import { useUser } from "../../../../hooks/useUser";
 import AddElementButton from "../../../../lib/AddElementButton";
 import Card from "../../../../lib/Card";
-import Navbar from "../../../../Navbar";
+import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect'
 import Modal from 'react-modal';
 import { useState } from "react";
 import RegisterBaby from "./RegisterBaby";
@@ -35,7 +35,7 @@ export default function Home(){
                     </Card>
 
                     <h2 className="baby-header">Your children:</h2>
-                    <div className="baby-container">
+                    <div className={isMobile ?  '' : 'baby-container'}>
                         { renderBabyCards() }
                     </div>
                     <AddElementButton onClick={() => setCreateModalIsOpen(true)} />

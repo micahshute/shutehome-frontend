@@ -6,11 +6,11 @@ import { userReducer } from "./reducer/userReducer"
 
 export default function UserProvider({ LoginApp, children}){
 
-  const [state, dispatch] = useReducer(userReducer, {})
+  const [state, dispatch] = useReducer(userReducer, {hasLoaded: false, hasLoggedOut: false, user: {}})
   const {data, error, loading } = useRest('/me', "get") 
 
   const userData = useMemo(() => ({
-    user: state,
+    user: state.user,
     logout: () => dispatch({ type: "REMOVE_USER"}),
     login: (user) => dispatch({ type: "SET_USER",  payload: user }),
     addBaby: (babyData) => dispatch({type: "ADD_BABY", payload: babyData}),
@@ -19,14 +19,16 @@ export default function UserProvider({ LoginApp, children}){
   }), [state, dispatch])
 
   useEffect(() => {
-    if(data && !error && !loading && Object.keys(userData.user).length === 0){
+    if(!state.hasLoaded && data && !error && !loading && Object.keys(userData.user).length === 0){
       userData.login({ user: data })
+    }else if(error && !state.hasLoaded){
+      userData.login({ user: {}})
     }
   }, [data, error, loading, userData])
 
-  const noUser = !userData?.user || Object.keys(userData.user).length === 0
+  const noUser = (state.hasLoaded || state.hasLoggedOut) && (!userData?.user || Object.keys(userData.user).length === 0)
   const renderChildren = () => {
-    if(loading){
+    if(loading || !state.hasLoaded){
       return (
         <Landing />
       )
