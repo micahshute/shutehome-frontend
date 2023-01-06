@@ -3,6 +3,7 @@ import DateTimePicker from "react-datetime-picker"
 import DatePicker from 'react-mobile-datepicker'
 import { useState } from 'react'
 import { getFullDate, getTime } from '../../../../lib/helpers/helpers'
+import { useEffect } from 'react'
 
 
 export function MDDateTimePicker({onChange, value}){
@@ -40,6 +41,15 @@ export function MDDateTimePicker({onChange, value}){
             step: 1,
         },
     }
+
+    useEffect(() => {
+        if(isOpen){
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+            document.body.style.overflow = 'hidden'
+        }else{
+            document.body.style.overflow = 'unset'
+        }
+    }, [isOpen])
 
 
     return (

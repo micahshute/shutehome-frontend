@@ -24,9 +24,16 @@ export default function MeasurementRecord({babyId, onComplete, measurementRecord
         return measurementRecord.value
     }
 
+    const getInitialTime = () => {
+        if(measurementRecord){
+            return new Date(measurementRecord.time)
+        }
+        return new Date()
+    }
+
     const initialType = getInitialType()
     const initialValue = getInitialValue()
-    const initialTime = measurementRecord?.time || new Date()
+    const initialTime = getInitialTime()
     const initialNotes = measurementRecord?.notes || ''
 
     const [time, setTime] = useState(initialTime)

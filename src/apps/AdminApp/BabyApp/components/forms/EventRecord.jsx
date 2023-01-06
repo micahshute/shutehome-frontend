@@ -9,9 +9,16 @@ export default function EventRecord({babyId, onComplete, eventRecord=null}){
 
     const { addToast } = useToasts()
 
+    const getInitialDate = () => {
+        if(eventRecord){
+            return new Date(eventRecord.time)
+        }
+        return new Date()
+    }
+
 
     const initialName = eventRecord?.name || ''
-    const initialTime = (new Date(eventRecord?.time)) || new Date()
+    const initialTime = getInitialDate()
     const initialNotes = eventRecord?.notes || ''
 
     const [name, setName] = useState(initialName)
