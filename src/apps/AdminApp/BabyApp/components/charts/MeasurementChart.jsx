@@ -22,7 +22,7 @@ export default function MeasurementChart({ sortedMeasurementData, width='100%' }
         data: percentileData, 
         error: percentileError, 
         loading: percentileLoading 
-    } = useRest(`/babies/${sortedMeasurementData[0].baby_id}/measurements/percentile_data`, 'POST', {data: sortedMeasurementData})
+    } = useRest(`/babies/${sortedMeasurementData[0]?.baby_id}/measurements/percentile_data`, 'POST', {data: sortedMeasurementData})
 
     if(sortedMeasurementData.length < 2){ return null }
 

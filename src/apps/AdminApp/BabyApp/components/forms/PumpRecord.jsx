@@ -9,9 +9,17 @@ export default function PumpRecord({babyId, onComplete, pumpRecord=null}){
 
     const { addToast } = useToasts()
 
+    
+    const getInitialDate = (strOrNull) => {
+        if(strOrNull){
+            return new Date(strOrNull)
+        }
 
-    const initialStartTime =pumpRecord?.startTime || new Date()
-    const initialEndTime = pumpRecord?.endTime || new Date()
+        return new Date()
+    }
+
+    const initialStartTime = getInitialDate(pumpRecord?.start_time)
+    const initialEndTime = getInitialDate(pumpRecord?.end_time)
     const initialYield = pumpRecord?.yield || 0
     const initialUnits = pumpRecord?.units || 'oz'
     const initialNotes = pumpRecord?.notes || ''

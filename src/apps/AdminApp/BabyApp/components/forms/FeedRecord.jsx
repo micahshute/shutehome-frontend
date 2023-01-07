@@ -36,7 +36,7 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
     let initialNotes = ''
 
     if(feedRecord){
-        initialFeedTime = feedRecord.time
+        initialFeedTime = new Date(feedRecord.time)
         initialFeedType = feedRecord.food_type
         initialQuantity = feedRecord.quantity
         initialQuantityType = feedRecord.quantity_type

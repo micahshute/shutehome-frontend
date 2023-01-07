@@ -9,9 +9,16 @@ export default function TummyTimeRecord({babyId, onComplete, tummyTimeRecord=nul
 
     const { addToast } = useToasts()
 
+    const getInitialDate = (strOrNull) => {
+        if(strOrNull){
+            return new Date(strOrNull)
+        }
 
-    const initialStartTime = tummyTimeRecord?.startTime || new Date()
-    const initialEndTime = tummyTimeRecord?.endTime || new Date()
+        return new Date()
+    }
+
+    const initialStartTime = getInitialDate(tummyTimeRecord?.start_time)
+    const initialEndTime = getInitialDate(tummyTimeRecord?.end_time)
     const initialNotes = tummyTimeRecord?.notes || ''
 
     const [startTime, setStartTime] = useState(initialStartTime)
