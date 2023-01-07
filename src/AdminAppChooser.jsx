@@ -8,6 +8,7 @@ import Navbar from "./Navbar";
 import Card from "./lib/Card";
 import { FaBaby } from 'react-icons/fa'
 import { GiClassicalKnowledge, GiDefenseSatellite } from 'react-icons/gi'
+import { isMobile } from 'react-device-detect'
 
 export default function AdminAppChooser(){
 
@@ -20,7 +21,7 @@ export default function AdminAppChooser(){
                 <div className="grid-container">
                     <div className="m-10p">
                         <Card 
-                            header={'Baby Tracker'}
+                            header={isMobile ? '' : 'Baby Tracker'}
                             onClick={() => { navigate('/baby-tracker') }} 
                         >
                             <div className="w-full text-center">
@@ -31,7 +32,7 @@ export default function AdminAppChooser(){
                     </div>
                     <div className="m-10p">
                         <Card 
-                            header={'Knowledge Tracker'}
+                            header={isMobile ? '' : 'Knowledge Tracker'}
                             onClick={() => { navigate('/knowledge-tracker')}} 
                         >
                             <div className="w-full text-center">
@@ -42,7 +43,7 @@ export default function AdminAppChooser(){
                     </div>
                     <div className="m-10p">
                         <Card 
-                            header={'Home Security'}
+                            header={isMobile ? '' : 'Home Security'}
                             onClick={() => { alert("App not setup")}} 
                         >
                             <div className="w-full text-center">
