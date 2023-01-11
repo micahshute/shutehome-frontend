@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
 // export const BASE_URL = 'http://localhost:3000' || "http://192.168.1.77:3000"
-export const BASE_URL = "http://192.168.1.77:3000"
+// export const BASE_URL = "http://192.168.1.77:3000"
+export const BASE_URL = 'https://api.shutehome.com'
+
 
 export function useRest(url, method="get", body=null, options={useTimezone: false}){
     const [data, setData] = useState(null)
