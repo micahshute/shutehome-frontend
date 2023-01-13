@@ -7,6 +7,7 @@ import iconHome from '../assets/icon_home.png';
 export default function Login(){
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [rememberMe, setRememberMe] = useState(false)
 
     const { login } = useUser()
 
@@ -20,7 +21,8 @@ export default function Login(){
     const handleLogin = () => {
         const body = {
             username,
-            password
+            password,
+            rememberMe
         }
         setUsername('')
         setPassword('')
@@ -73,6 +75,13 @@ export default function Login(){
                 </div>
                 <div className="m-15">
                     <button className="btn-dark" onClick={handleLogin} disabled={loading}>Log in</button>
+                </div>
+                <div className="text-sm">
+                    <label className="checkmark-container-sm text-sm">
+                        <span className="text-sm">Remember Me</span>
+                        <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />
+                        <span class="checkmark-sm"></span>
+                    </label>
                 </div>
                 { error && renderError() }
                 { renderSignupLink() }
