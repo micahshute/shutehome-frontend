@@ -291,22 +291,38 @@ export default function Dashboard(){
     }
 
     const renderHasEventDashboard = () => {
+        let component;
         switch(fetchEventData.current_event.name){
             case SLEEPING: 
-                return renderSleepingEvent()
+                component = renderSleepingEvent()
+                break
             case EATING:
-                return renderEatingEvent()
+                component = renderEatingEvent()
+                break
             case TUMMY_TIME:
-                return renderTummyTimeEvent()
+                component = renderTummyTimeEvent()
+                break
             case POST_FEEDING:
-                return renderPostFeedingEvent()
+                component = renderPostFeedingEvent()
+                break
             case CHANGING:
-                return renderChangingEvent()
+                component = renderChangingEvent()
+                break
             case TIMER:
-                return renderTimerEvent()
+                component = renderTimerEvent()
+                break
             default: 
                 throw new Error("Unknown event")
         }
+
+        return (
+            <>
+                <div className="text-center">
+                    { renderSleepAndFeedTimers() }
+                </div>
+                { component }
+            </>
+        )
     }
 
     const startEvent = eventType => {
@@ -317,29 +333,49 @@ export default function Dashboard(){
         })
     }
 
+    const renderSleepTimer = () => {
+        if(fetchEventData.has_current_event && fetchEventData.current_event.name === SLEEPING) {
+            return null
+        }
+
+        return (
+            <div className='w-80'>
+                <p>Time since last sleep</p>
+                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} />
+            </div>
+        )
+    }
+
+    const renderFeedTimer = () => {
+        if(fetchEventData.has_current_event && fetchEventData.current_event.name === EATING) {
+            return null
+        }
+
+        const shouldRenderRightBorder = !(fetchEventData.has_current_event && fetchEventData.current_event.name === SLEEPING)
+
+        return (
+            <div className='w-80'>
+                <p>Time since last feed</p>
+                <div className={shouldRenderRightBorder && "border-right"}>
+                    <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} />
+                </div>
+            </div>
+        )
+    }
+
+    const renderSleepAndFeedTimers = () => {
+        return (
+            <div className="flex space-around border-bottom">
+                { dayStatsData.feeds.last_feed_time && renderFeedTimer() }
+                { dayStatsData.sleeps.last_sleep_time && renderSleepTimer() }
+            </div>
+        )
+    }
+
     const renderHasNoEventDashboard = () => {
         return (
             <div className='text-center'>
-                <div className="flex space-around border-bottom">
-                    {
-                        dayStatsData.feeds.last_feed_time && (
-                            <div className='w-80'>
-                                <p>Time since last feed</p>
-                                <div className="border-right">
-                                    <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} />
-                                </div>
-                            </div>
-                        )
-                    }
-                    {
-                        dayStatsData.sleeps.last_sleep_time && (
-                            <div className='w-80'>
-                                <p>Time since last sleep</p>
-                                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} />
-                            </div>
-                        )
-                    }
-                </div>
+                { renderSleepAndFeedTimers() }
                 <div className="event-button-container">
                     <button 
                         className="btn btn-event"
