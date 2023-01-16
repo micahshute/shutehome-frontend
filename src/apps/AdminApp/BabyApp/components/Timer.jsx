@@ -3,7 +3,9 @@ import { useEffect } from "react";
 import { pad } from "../../../../lib/helpers/helpers";
 
 
-export function Timer({startTime, skinny}){
+export function Timer({startTime, skinny, minutesUntilDanger=Infinity}){
+
+    const DANGER_COLOR_CLASS = 'red'
 
     const getSecondsFromStartTime = () => {
         const now = new Date()
@@ -12,10 +14,15 @@ export function Timer({startTime, skinny}){
     }
 
     const [seconds, setSeconds] = useState(getSecondsFromStartTime())
+    const [colorClass, setColorClass] = useState('black')
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setSeconds(getSecondsFromStartTime())
+            const currentSeconds = getSecondsFromStartTime()
+            if(colorClass !== DANGER_COLOR_CLASS && currentSeconds / 60 >= minutesUntilDanger){
+                setColorClass('red')
+            }
+            setSeconds(currentSeconds)
         }, 1000)
         return () => clearInterval(interval)
     }, [])
@@ -32,7 +39,7 @@ export function Timer({startTime, skinny}){
 
     return (
         <div className={skinny ? 'skinny-timer': 'timer'}>
-            <p className="bold">{formatTimeDiff()}</p>
+            <p className={`bold ${colorClass}`}>{formatTimeDiff()}</p>
         </div>
     )
 

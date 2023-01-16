@@ -338,10 +338,12 @@ export default function Dashboard(){
             return null
         }
 
+        const SLEEP_TIME_WINDOW_MINUTES = 90
+
         return (
             <div className='w-80'>
                 <p>Time since last sleep</p>
-                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} />
+                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} minutesUntilDanger={SLEEP_TIME_WINDOW_MINUTES} />
             </div>
         )
     }
@@ -352,12 +354,13 @@ export default function Dashboard(){
         }
 
         const shouldRenderRightBorder = !(fetchEventData.has_current_event && fetchEventData.current_event.name === SLEEPING)
+        const EAT_TIME_WINDOW_MINUTES = 150
 
         return (
             <div className='w-80'>
                 <p>Time since last feed</p>
                 <div className={shouldRenderRightBorder && "border-right"}>
-                    <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} />
+                    <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} minutesUntilDanger={EAT_TIME_WINDOW_MINUTES} />
                 </div>
             </div>
         )

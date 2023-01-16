@@ -661,6 +661,14 @@ table {
   background: #ececec;
 }
 
+.black {
+  color: black;
+}
+
+.red {
+  color: rgb(179, 1, 1);
+}
+
 .x {
     border: none;
     /* border-radius: 3px;
