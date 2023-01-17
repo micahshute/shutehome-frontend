@@ -58,10 +58,16 @@ export default function ShowSleep(){
     })
 
     let totalSleepTimeMinutes = 0
+    const todayDay = new Day(today)
+    let shouldSubtractDaysWithDataByOne = false
 
     const sortedSleeps = data.map(sleepDatum => {
         const sleepDateRange = DateRange.fromString(sleepDatum.start_time, sleepDatum.end_time)
-        totalSleepTimeMinutes += sleepDateRange.durationMinutes()
+        if(!sleepDateRange.includes(todayDay)){
+            totalSleepTimeMinutes += sleepDateRange.durationMinutes()
+        }else{
+            shouldSubtractDaysWithDataByOne = true
+        }
         return {
             dateRange: sleepDateRange,
             data: sleepDatum
@@ -236,7 +242,8 @@ export default function ShowSleep(){
     }
 
     const numberOfDaysWithData = Object.values(daysToDaySleepTotalMinutes).filter(mins => mins && mins > 0).length
-    const averageHoursPerDay = round((totalSleepTimeMinutes / 60) / numberOfDaysWithData, 2)
+    const daysWithDataExceptToday = shouldSubtractDaysWithDataByOne ? numberOfDaysWithData - 1 : numberOfDaysWithData
+    const averageHoursPerDay = round((totalSleepTimeMinutes / 60) / daysWithDataExceptToday, 2)
 
     return (
         <div className="page">
@@ -250,7 +257,7 @@ export default function ShowSleep(){
                     <AddElementButton onClick={openCreateModal} center className="mt-0"/>
                 </div>
             </div>
-            { numberOfDaysWithData > 0 && <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2> }
+            { daysWithDataExceptToday > 0 && <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2> }
             <p className="text-sm">Coming soon: Avg bedtime</p>
             { renderDayCards() }
             <button 
