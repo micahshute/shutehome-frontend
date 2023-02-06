@@ -36,49 +36,49 @@ export default function BabyOvervirew(){
         error: sleepError,
         loading: sleepLoading, 
         reload: reloadSleepData,
-    } = useRest(`/babies/${baby.id}/sleeps?forDateRange=day`, 'get', null, { useTimezone: true})
+    } = useRest(`/babies/${baby.id}/sleeps?forDateRange=day&limit=5`, 'get', null, { useTimezone: true})
 
     const { 
         data: feedData,
         error: feedError,
         loading: feedLoading, 
         reload: reloadFeedData,
-    } = useRest(`/babies/${baby.id}/feedings?forDateRange=day`, 'get', null, { useTimezone: true })
+    } = useRest(`/babies/${baby.id}/feedings?forDateRange=day&limit=5`, 'get', null, { useTimezone: true })
 
     const {
         data: diaperData,
         error: diaperError,
         loading: diaperLoading,
         reload: reloadDiaperData
-    } = useRest(`/babies/${baby.id}/diapers?forDateRange=day`, 'get', null, { useTimezone: true })
+    } = useRest(`/babies/${baby.id}/diapers?forDateRange=day&limit=5`, 'get', null, { useTimezone: true })
 
     const {
         data: tummyTimeData,
         error: tummyTimeError,
         loading: tummyTimeLoading,
         reload: reloadTummyTimeData
-    } = useRest(`/babies/${baby.id}/tummy_times?forDateRange=day`, 'get', null, {useTimezone: true})
+    } = useRest(`/babies/${baby.id}/tummy_times?forDateRange=day&limit=5`, 'get', null, {useTimezone: true})
 
     const {
         data: pumpData,
         error: pumpError,
         loading: pumpLoading,
         reload: reloadPumpData
-    } = useRest(`/babies/${baby.id}/pumps?forDateRange=day`, 'get', null, {useTimezone: true})
+    } = useRest(`/babies/${baby.id}/pumps?forDateRange=day&limit=5`, 'get', null, {useTimezone: true})
 
     const {
         data: measurementData,
         error: measurementError,
         loading: measurementLoading,
         reload: reloadMeasurementData
-    } = useRest(`/babies/${baby.id}/measurements?forDateRange=day`, 'get', null, {useTimezone: true})
+    } = useRest(`/babies/${baby.id}/measurements?forDateRange=day&limit=5`, 'get', null, {useTimezone: true})
 
     const {
         data: eventData,
         error: eventError,
         loading: eventLoading,
         reload: reloadEventData
-    } = useRest(`/babies/${baby.id}/events?forDateRange=day`, 'get', null, { useTimezone: true })
+    } = useRest(`/babies/${baby.id}/events?forDateRange=day&limit=5`, 'get', null, { useTimezone: true })
 
     if(!baby){
         return <Navigate to="/" />
@@ -150,7 +150,7 @@ export default function BabyOvervirew(){
         const getDiaperElement = (diaperData) => {
             let content;
             if(diaperData.has_liquid){
-                content = diaperData.has_solid ? "Pee and Poop" : "Pee"
+                content = diaperData.has_solid ? "Pee&Poop" : "Pee"
             }else if(diaperData.has_solid){
                 content = "Poop"
             }else{
@@ -176,7 +176,7 @@ export default function BabyOvervirew(){
                 <tr className="divided-tr" key={tummyTimeDatum.id}>
                     <th>{getDate(tummyTimeDatum.end_time)}</th>
                     <td className="pl-10">{getTime(tummyTimeDatum.end_time)}</td>
-                    <th className="pl-10">Length</th>
+                    <th className="pl-10">For:</th>
                     <td className="pl-10">{duration}</td>
                 </tr>
             )
