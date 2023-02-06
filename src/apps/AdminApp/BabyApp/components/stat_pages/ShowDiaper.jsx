@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 import Loader from "../../../../../lib/Loader"
 import { AiFillEdit } from "react-icons/ai"
 import DiaperRecord from "../forms/DiaperRecord"
-import { getDate, getTime } from "../../../../../lib/helpers/helpers"
+import { getDate, getTime, sortBy } from "../../../../../lib/helpers/helpers"
 import { Day } from "../../../../../lib/helpers/time/dateMath"
 import Card from "../../../../../lib/Card"
 
@@ -111,7 +111,7 @@ export default function ShowDiaper(){
                             </tr>
                         </thead>
                         <tbody>
-                            { dayData.map(datum => renderCardRow(datum)) }
+                            { sortBy(dayData, 'time').map(datum => renderCardRow(datum)) }
                         </tbody>
                     </table>
                 </Card>

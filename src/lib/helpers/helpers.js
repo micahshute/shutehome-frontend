@@ -82,6 +82,17 @@ export function getDate(dateArg){
     return `${month}/${day}`
 }
 
+export function sortBy(coll, keyValue, reverse=false){
+    return coll.sort((a,b) => {
+        if(a[keyValue] < b[keyValue]){
+            return reverse ? 1 : -1
+        }else if(a[keyValue] > b[keyValue]){
+            return reverse ? -1 : 1
+        }
+        return 0
+    })
+}
+
 
 export function getFullDate(dateString){
     const shortDate = getDate(dateString)
