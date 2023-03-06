@@ -23,11 +23,13 @@ const FEED_TYPES = {
     BREAST: 'breast',
     FORMULA: 'formula',
     BOTTLE_BREAST: 'bottle_breast',
+    SOLID: 'solid'
 }
 
 const QUANTITY_TYPES = {
     TIME: 'time',
-    AMOUNT: 'amount'
+    AMOUNT: 'amount',
+    SOLID: 'solid'
 }
 
 export default function Dashboard(){
@@ -108,7 +110,8 @@ export default function Dashboard(){
                     <ul>
                         <li>Eaten {dayStatsData.feeds.total_feeds} times</li>
                         { dayStatsData.feeds.has_breastfed && <li>Breastfed for {dayStatsData.feeds.total_breastfeed_time} mins</li> }
-                        { dayStatsData.feeds.has_bottlefed && <li>Eaten {dayStatsData.feeds.total_bottlefed_amount } oz.</li>}
+                        { dayStatsData.feeds.has_bottlefed && <li>Bottlefed {dayStatsData.feeds.total_bottlefed_amount } fl oz.</li>}
+                        { dayStatsData.feeds.has_solids && <li>Eaten {dayStatsData.feeds.total_solids_amount } oz of solids</li>}
                         <li>Slept {dayStatsData.sleeps.total_night_sleep_time} hours last night</li>
                         <li>Napped {dayStatsData.sleeps.total_naps} times for a total of {dayStatsData.sleeps.total_nap_hours} hours</li>
                         <li>Been changed {dayStatsData.diapers.total_diaper_changes} times, with {dayStatsData.diapers.total_poops} poops and {dayStatsData.diapers.total_pees} pees</li>
@@ -163,7 +166,7 @@ export default function Dashboard(){
 
     const saveEatingEvent = () => {
         const time = new Date(fetchEventData.current_event.start_time)
-        const quantity_type = feedType === FEED_TYPES.BREAST ? QUANTITY_TYPES.TIME : QUANTITY_TYPES.AMOUNT
+        const quantity_type = feedType === FEED_TYPES.BREAST ? QUANTITY_TYPES.TIME : (feedType === FEED_TYPES.SOLID) ? QUANTITY_TYPES.SOLID : QUANTITY_TYPES.AMOUNT
         let quantity = feedAmount
         if(feedType === FEED_TYPES.BREAST){
             const now = new Date()
@@ -238,12 +241,13 @@ export default function Dashboard(){
                     <option value={FEED_TYPES.FORMULA}>Formula</option>
                     <option value={FEED_TYPES.BOTTLE_BREAST}>Bottled Breastmilk</option>
                     <option value={FEED_TYPES.BREAST}>Breast Feed</option>
+                    <option value={FEED_TYPES.SOLID}>Solids</option>
                 </select>
                 { feedType === FEED_TYPES.BREAST ? (
-                    <label class="checkmark-container">
+                    <label className="checkmark-container">
                         Did Latch?
                         <input type="checkbox" checked={didLatch} onChange={e => setDidLatch(e.target.checked)} />
-                        <span class="checkmark"></span>
+                        <span className="checkmark"></span>
                     </label>
                 ): (
                     <>
@@ -261,15 +265,15 @@ export default function Dashboard(){
     const renderChangingEvent = () => {
         const diaperForm = (
             <div className="w-80 margin-auto mt-30">
-                <label class="checkmark-container">
+                <label className="checkmark-container">
                     Pee?
                     <input type="checkbox" checked={hasLiquid} onChange={e => setHasLiquid(e.target.checked)} />
-                    <span class="checkmark"></span>
+                    <span className="checkmark"></span>
                 </label>
-                <label class="checkmark-container">
+                <label className="checkmark-container">
                     Poo?
                     <input type="checkbox" checked={hasSolid} onChange={e => setHasSolid(e.target.checked)} />
-                    <span class="checkmark"></span>
+                    <span className="checkmark"></span>
                 </label>
                 <label>Color</label>
                 <input type="text" value={color} onChange={e => setColor(e.target.value)} />
@@ -359,7 +363,7 @@ export default function Dashboard(){
         return (
             <div className='w-80'>
                 <p>Time since last feed</p>
-                <div className={shouldRenderRightBorder && "border-right"}>
+                <div className={shouldRenderRightBorder ? "border-right" : null}>
                     <Timer skinny startTime={new Date(dayStatsData.feeds.last_feed_time)} minutesUntilDanger={EAT_TIME_WINDOW_MINUTES} />
                 </div>
             </div>
@@ -378,36 +382,38 @@ export default function Dashboard(){
     const renderHasNoEventDashboard = () => {
         return (
             <div className='text-center'>
-                { renderSleepAndFeedTimers() }
-                <div className="event-button-container">
-                    <button 
-                        className="btn btn-event"
-                        onClick={() => startEvent(SLEEPING)} 
-                    >Start Sleep</button>
-                </div>
-                <div className="event-button-container">
-                    <button 
-                        className="btn btn-event"
-                        onClick={() => startEvent(EATING)}     
-                    >Start Feed</button>
-                </div>
-                <div className="event-button-container">
-                    <button 
-                        className="btn btn-event"
-                        onClick={() => startEvent(CHANGING)} 
-                    >Start Change</button>
-                </div>
-                <div className="event-button-container">
-                    <button 
-                        className="btn btn-event"
-                        onClick={() => startEvent(TUMMY_TIME)} 
-                    >Start Tummy Time</button>
-                </div>
-                <div className="event-button-container">
-                    <button 
-                        className="btn btn-event"
-                        onClick={() => startEvent(TIMER)} 
-                    >Start Timer</button>
+                    { renderSleepAndFeedTimers() }
+                <div className='control-panel'>
+                    <div className="event-button-container">
+                        <button 
+                            className="btn btn-event"
+                            onClick={() => startEvent(SLEEPING)} 
+                        >Start Sleep</button>
+                    </div>
+                    <div className="event-button-container">
+                        <button 
+                            className="btn btn-event"
+                            onClick={() => startEvent(EATING)}     
+                        >Start Feed</button>
+                    </div>
+                    <div className="event-button-container">
+                        <button 
+                            className="btn btn-event"
+                            onClick={() => startEvent(CHANGING)} 
+                        >Start Change</button>
+                    </div>
+                    <div className="event-button-container">
+                        <button 
+                            className="btn btn-event"
+                            onClick={() => startEvent(TUMMY_TIME)} 
+                        >Start Tummy Time</button>
+                    </div>
+                    <div className="event-button-container">
+                        <button 
+                            className="btn btn-event"
+                            onClick={() => startEvent(TIMER)} 
+                        >Start Timer</button>
+                    </div>
                 </div>
             </div>
         )

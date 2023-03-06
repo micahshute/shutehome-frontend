@@ -107,7 +107,7 @@ export default function BabyOvervirew(){
 
     const renderSleepTimes = () => {
         const getSleepElement = (sleepEvent) => (
-            <tr className="divided-tr" key={sleepEvent.start_time}>
+            <tr className="divided-tr" key={sleepEvent.id}>
                 <th>{getDate(sleepEvent.start_time)}</th>
                 <td className="pl-10">{getTime(sleepEvent.start_time)}</td>
                 <th className="pl-10">For</th>
@@ -127,14 +127,17 @@ export default function BabyOvervirew(){
                 quantityDescriptor = 'For'
                 quantityUnit = 'mins'
             }else if(quantityType === 'amount'){
-                quantityDescriptor = 'Amt'
+                quantityDescriptor = 'Fluid'
+                quantityUnit = 'oz'
+            }else if(quantityType === 'solid'){
+                quantityDescriptor = 'Solid'
                 quantityUnit = 'oz'
             }
 
             const quantity = `${feedEvent.quantity} ${quantityUnit}`
 
             return (
-                <tr className="divided-tr">
+                <tr className="divided-tr" key={feedEvent.id}>
                     <th>{getDate(feedEvent.time)}</th>
                     <td className="pl-10">{getTime(feedEvent.time)}</td>
                     <th className="pl-10">{quantityDescriptor}</th>
@@ -357,7 +360,7 @@ export default function BabyOvervirew(){
 
             <div className="flex justify-center align-center mt-30">
                 <button 
-                    className="btn btn-primary btn-large bold"
+                    className="btn btn-primary btn-xl bold"
                     onClick={() => navigate(`/baby-tracker/babies/${baby.id}/dashboard`)}
                 >Dashboard</button>
             </div>

@@ -80,7 +80,7 @@ export default function Login(){
                     <label className="checkmark-container-sm text-sm">
                         <span className="text-sm">Remember Me</span>
                         <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />
-                        <span class="checkmark-sm"></span>
+                        <span className="checkmark-sm"></span>
                     </label>
                 </div>
                 { error && renderError() }

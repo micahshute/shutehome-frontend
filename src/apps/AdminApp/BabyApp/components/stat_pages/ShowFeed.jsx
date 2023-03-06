@@ -115,7 +115,7 @@ export default function ShowFeed(){
                 <tr key={datum.id}>
                     <td className="text-center">{getTime(datum.time)}</td>
                     <td className="text-center">{datum.quantity}</td>
-                    <td className="text-center">{datum.quantity_type === 'time' ? 'mins' : 'oz'}</td>
+                    <td className="text-center">{datum.quantity_type === 'time' ? 'mins' : datum.quantity_type === 'amount' ? 'oz' : 'sol. oz'}</td>
                     <td className="text-center">
                         <AiFillEdit 
                             style={{cursor: 'pointer'}} 
@@ -142,6 +142,12 @@ export default function ShowFeed(){
                     }else if(fdata.food_type === 'bottle_breast'){
                         totalBreastmilkAmount += fdata.quantity
                     }
+                }
+                return mem
+            }, 0)
+            const totalSolids = feedDataForDay.feedData.reduce((mem, fdata) => {
+                if(fdata.quantity_type === 'solid'){
+                    mem += fdata.quantity
                 }
                 return mem
             }, 0)
@@ -175,12 +181,14 @@ export default function ShowFeed(){
                                     width={window.innerWidth > 1000 ? '70%' : '100%' }
                                     showBreastfeed={totalTime > 0}
                                     showBottle={totalAmount > 0}
+                                    showSolids={totalSolids > 0}
                                 />
                             </div>
                             { totalAmount > 0 && (<p><strong>Total Pumped Breastmilk: {totalBreastmilkAmount} Oz</strong></p>) }
-                            { totalAmount > 0 && (<p><strong>Total Formula: {totalFormulaAmount} Oz</strong></p>) }
-                            { totalAmount > 0 && (<p style={{fontSize: '1.5em'}}><strong>Total Amount: {totalAmount} Oz</strong></p>) }
+                            { totalAmount > 0 && (<p><strong>Total Formula: {totalFormulaAmount} fl. oz</strong></p>) }
+                            { totalAmount > 0 && (<p style={{fontSize: '1.5em'}}><strong>Total Milk Amount: {totalAmount} oz</strong></p>) }
                             { totalTime > 0 && (<p style={{fontSize: '1.5em'}}><strong>Total Time: {totalTime} mins</strong></p>)}
+                            { totalSolids > 0 && (<p style={{fontSize: '1.5em'}}><strong>Total Solids: {totalSolids} oz</strong></p>)}
                             <p><strong>Fed {totalFeedings} times</strong></p>
                         </>
                     </Card>
@@ -207,8 +215,10 @@ export default function ShowFeed(){
                         <div>
                             { statData.any_times_exist && <p className="text-lg">Average Breastfeed Time: {round(statData.average_time_per_day, 2)} mins</p>}
                             { statData.any_times_exist && <p className="text-lg">Time StdDev: {round(statData.time_std, 2)} mins</p>}
-                            { statData.any_volumes_exist && <p className="text-lg">Average Feed Volume: {round(statData.average_volume_per_day, 2)} oz</p>}
+                            { statData.any_volumes_exist && <p className="text-lg">Average Feed Volume: {round(statData.average_volume_per_day, 2)} fl. oz</p>}
                             { statData.any_volumes_exist && <p className="text-lg">Vol. StdDev: {round(statData.volume_std, 2)} oz</p>}
+                            { statData.any_solids_exist && <p className="text-lg">Average Solid Volume: {round(statData.average_solids_per_day,2)} oz</p>}
+                            { statData.any_solids_exist && <p className="text-lg">Solids StdDev: {round(statData.solids_std, 2)} oz</p>}
                         </div>
                     </Card>
                 </div>

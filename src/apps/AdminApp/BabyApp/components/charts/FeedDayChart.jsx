@@ -12,14 +12,15 @@ import {
 
 import { pad, parseUTCDate } from '../../../../../lib/helpers/helpers'
 
-export default function FeedDayChart({ feedData, width, showBreastfeed=false, showBottle=true }){
+export default function FeedDayChart({ feedData, width, showBreastfeed=false, showBottle=true, showSolids=false }){
 
     const minutes = Array.from({length: (4 * 24)}, (x, i) => i * 15)
     const data = minutes.map(minute => {
         const hour = Number.parseInt(minute / 60);
         return {
-            oz: 0,
+            floz: 0,
             mins: 0,
+            oz: 0,
             name: `${pad(hour, 2)}`
         }
     })
@@ -31,9 +32,11 @@ export default function FeedDayChart({ feedData, width, showBreastfeed=false, sh
         const closestEarlierQuarterHour = Number.parseInt(minute / 60 * 4)
         const minuteIndex = closestEarlierQuarterHour + hour * 4
         if(feedDatum.quantity_type === 'amount'){
-            data[minuteIndex].oz += feedDatum.quantity
+            data[minuteIndex].floz += feedDatum.quantity
         }else if(feedDatum.quantity_type === 'time'){
             data[minuteIndex].mins += feedDatum.quantity
+        }else if(feedDatum.quantity_type === 'solid'){
+            data[minuteIndex].oz += feedDatum.quantity
         }
     })
 
@@ -47,8 +50,9 @@ export default function FeedDayChart({ feedData, width, showBreastfeed=false, sh
                 <YAxis />
                 <Tooltip />
                 <Legend verticalAlign="bottom" align="right" />
-                { showBottle && <Bar dataKey="oz" fill="#8884d8" stackId="a" /> }
+                { showBottle && <Bar dataKey="floz" fill="#8884d8" stackId="a" /> }
                 { showBreastfeed && <Bar dataKey="mins" fill="#82ca9d" stackId="a" /> }
+                { showSolids && <Bar dataKey="oz" fill="#3c4544" stackId="a" />}
             </BarChart>
         </ResponsiveContainer>
     )

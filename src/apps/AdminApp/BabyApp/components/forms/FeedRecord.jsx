@@ -8,17 +8,20 @@ const FEED_TYPES = {
     BREAST: 'breast',
     FORMULA: 'formula',
     BOTTLE_BREAST: 'bottle_breast',
+    SOLID: "solid"
 }
 
 const QUANTITY_TYPES = {
     TIME: 'time',
-    AMOUNT: 'amount'
+    AMOUNT: 'amount',
+    SOLID: 'solid'
 }
 
 const FEED_TYPE_QUANTITY_TYPE = {
     [FEED_TYPES.BREAST]: QUANTITY_TYPES.TIME,
     [FEED_TYPES.FORMULA]: QUANTITY_TYPES.AMOUNT,
-    [FEED_TYPES.BOTTLE_BREAST]: QUANTITY_TYPES.AMOUNT
+    [FEED_TYPES.BOTTLE_BREAST]: QUANTITY_TYPES.AMOUNT,
+    [FEED_TYPES.SOLID]: QUANTITY_TYPES.SOLID,
 }
 
 function getQuantityType(feedType) {
@@ -139,6 +142,8 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
                 return timeQuantityComponent
             case QUANTITY_TYPES.AMOUNT:
                 return amountQuantityComponent
+            case QUANTITY_TYPES.SOLID:
+                return amountQuantityComponent
             default:
                 throw new Error("Unsupported quantity type")
         }
@@ -184,6 +189,7 @@ export default function FeedRecord({babyId, onComplete, feedRecord=null}){
                     <option value={FEED_TYPES.FORMULA}>Formula</option>
                     <option value={FEED_TYPES.BOTTLE_BREAST}>Bottled Breastmilk</option>
                     <option value={FEED_TYPES.BREAST}>Breast Feed</option>
+                    <option value={FEED_TYPES.SOLID}>Solid</option>
                 </select>
             </div>
             { renderQuantity() }
