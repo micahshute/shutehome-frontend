@@ -98,8 +98,14 @@ select {
   border: none;
   border-bottom: 1px solid rgb(59, 0, 3);
   border-radius: 2px;
-  background-color: #fefefe;
-  width: 100px;
+  background-color: #eee;
+  width: 160px;
+  padding: 4px;
+  margin-bottom: 14px;
+}
+
+.w-180{
+  width: 180px;
 }
 
 select:focus{
@@ -143,10 +149,12 @@ table {
   padding-left: 20px;
   padding-right: 20px;
   font-weight: normal;
-  border-radius: 5px;
+  border-radius: 8px;
   transition: 1s;
-  width: 80px;
-  height: 40px;
+  width: 100px;
+  height: 60px;
+  padding: 5px;
+  font-size: 1em;
 }
 
 .btn:hover {
@@ -161,6 +169,7 @@ table {
   width: 250px;
   height: 100px;
   border-radius: 15px;
+  font-size: 1.2em;
 }
 
 .btn-secondary {
@@ -169,6 +178,17 @@ table {
 
 .btn-secondary:hover {
   background-color:rgb(56, 56, 56)
+}
+
+.btn-tertiary {
+  background-color: #eee;
+  border: 1px solid rgb(44,44,44);
+  color: rgb(44, 44, 44);
+}
+
+.btn-tertiary:hover {
+  border: 2px solid rgb(44,44,44);
+  background-color: white;
 }
 
 .btn-primary {
@@ -218,6 +238,7 @@ table {
   /* position: flex; */
   /* justify-content: center; */
   /* align-items: center; */
+  border-bottom: none;
   border-radius: 50%;
   text-align: center;
   font-size: xx-large;
@@ -614,8 +635,7 @@ table {
 
 .baby-summary-table {
   width: 40%;
-  border-right: 2px solid #00426eec;
-  /* border-left: 2px solid #00426eec; */
+  /* border-right: 2px solid #00426eec; */
 }
 
 .baby-summary-table th{
@@ -643,12 +663,9 @@ table {
 .table-header {
   font-size: x-large;
   font-weight: bolder;
-  /* background:rgb(44, 44, 44); */
-  /* color:rgb(228, 226, 226); */
-  /* border-right: 2px solid  #00426eec;  */
   color: black; 
-  border-top: 5px solid #00426eec;
-  border-top-left-radius: 7px;
+  border-top: 2px solid #00426eec;
+  border-top-left-radius: 4px;
   padding: 5px;
 }
 

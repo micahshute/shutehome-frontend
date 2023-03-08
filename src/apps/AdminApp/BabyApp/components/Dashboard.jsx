@@ -8,9 +8,10 @@ import Loader from '../../../../lib/Loader'
 import { useToasts } from "react-toast-notifications"
 import { useEffect } from 'react'
 import { Timer } from './Timer'
-import { getDate, getVerboseDate, round } from '../../../../lib/helpers/helpers'
+import { getVerboseDate, round } from '../../../../lib/helpers/helpers'
 import { useState } from 'react'
 import Card from '../../../../lib/Card'
+import { MDDateTimePicker } from './DatePicker'
 
 const SLEEPING = 'sleeping'
 const TUMMY_TIME = 'tummy_time'
@@ -53,9 +54,10 @@ export default function Dashboard(){
     const { data: dayStatsData, loading: dayStatsLoading, error: dayStatsError, reload: refetchDayStats } = useRest(`/babies/${babyId}/day_stats`, 'GET', null, { useTimezone: true })
     const { data: createEventData, loading: createEventLoading, error: createEventError, call: createEventCall, reset: createEventReset} = useLazyRest()
     const { data: currentEventData, loading: currentEventLoading, error: currentEventError, call: callCurrentEvent } = useLazyRest()
+    const { data: updatedEventData, loading: updateEventLoading, error: updateEventError, call: callUpdateEvent } = useLazyRest()
 
-    const loading = fetchEventLoading || currentEventLoading || createEventLoading || dayStatsLoading
-    const error = fetchEventError || currentEventError || dayStatsError || createEventError
+    const loading = fetchEventLoading || currentEventLoading || createEventLoading || dayStatsLoading || updateEventLoading
+    const error = fetchEventError || currentEventError || dayStatsError || createEventError || updateEventError
 
     useEffect(() => {
         if(!createEventLoading && !createEventError && createEventData){
@@ -68,6 +70,17 @@ export default function Dashboard(){
             addToast('Failed to save event', { appearance: 'error' })
         }
     }, [createEventData, createEventError, createEventLoading])
+
+    useEffect(() => {
+        if(!updateEventLoading && !updateEventError && updatedEventData){
+            refetchCurrentEvent()
+            addToast('Updated Event Successfully', { appearance: 'success' })
+        }
+
+        if(!updateEventLoading && updateEventError){
+            addToast('Failed to update event', { appearance: 'error'})
+        }
+    }, [updateEventLoading, updateEventError, updatedEventData])
 
     useEffect(() => {
         if(!currentEventLoading && !currentEventError && currentEventData){
@@ -212,8 +225,16 @@ export default function Dashboard(){
             </div>
 
         ) : (
-            <div className="flex justify-between mt-50 w-80 margin-auto">
+            <div className="flex justify-between mt-50 w-100 margin-auto">
                 <button className="btn btn-secondary" onClick={onCancel}>Cancel</button>
+                <MDDateTimePicker 
+                    onChange={updateEvent} 
+                    value={new Date(fetchEventData.current_event.start_time)} 
+                    small={true} 
+                    buttonType='tertiary' 
+                    hideTimeDisplay={true}
+                    renderAsModal={true}
+                />
                 <button className="btn btn-primary" onClick={onSave}>Save</button>
             </div>
         )
@@ -235,7 +256,7 @@ export default function Dashboard(){
     const renderEatingEvent = () => {
 
         const eatingForm = (
-            <div className="w-80 margin-auto mt-30">
+            <div className="w-180 margin-auto mt-30">
                 <label>Type</label>
                 <select value={feedType} onChange={e => setFeedType(e.target.value)}>
                     <option value={FEED_TYPES.FORMULA}>Formula</option>
@@ -334,6 +355,13 @@ export default function Dashboard(){
         callCurrentEvent(url, "POST", {
             name: eventType,
             startTime: new Date()
+        })
+    }
+
+    const updateEvent = newStartTime => {
+        const url = `/babies/${babyId}/current_event`
+        callUpdateEvent(url, "PUT", {
+            startTime: newStartTime
         })
     }
 

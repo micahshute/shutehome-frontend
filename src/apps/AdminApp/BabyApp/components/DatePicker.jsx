@@ -4,14 +4,19 @@ import DatePicker from 'react-mobile-datepicker'
 import { useState } from 'react'
 import { getFullDate, getTime } from '../../../../lib/helpers/helpers'
 import { useEffect } from 'react'
+import Modal from 'react-modal'
 
-
-export function MDDateTimePicker({onChange, value}){
+export function MDDateTimePicker({onChange, value, small=false, hideTimeDisplay=false, buttonType='secondary', renderAsModal=false}){
     const [isOpen, setIsOpen] = useState(false)
+    const [desktopTime, setDesktopTime] = useState(new Date(value))
+    const [desktopModalOpen, setDesktopModalOpen] = useState(false)
 
     const handleMobileSelect = dateTime => {
         setIsOpen(false)
         onChange(dateTime)
+    }
+    const closeDesktopModal = () => {
+        setDesktopModalOpen(false)
     }
 
     const dateConfig = {
@@ -51,16 +56,38 @@ export function MDDateTimePicker({onChange, value}){
         }
     }, [isOpen])
 
+    const renderDesktopModal = () => (
+            <Modal 
+                isOpen={desktopModalOpen}
+                onRequestClose={closeDesktopModal}
+                contentLabel="Change event start time"
+            >
+                <div className="ml-30 mt-30 mr-30">
+                    <button className="x" onClick={closeDesktopModal}>Close</button>
+                    <div className="flex justify-between">
+                        <DateTimePicker onChange={date => setDesktopTime(date)} value={desktopTime} />
+                        <button className="btn btn-primary" onClick={() => onChange(desktopTime)}>Save</button>
+                    </div>
+                </div>
+            </Modal>
+    )
+
+    const renderDesktopDatePicker = () => <DateTimePicker onChange={onChange} value={value} />
+    
+    const renderModalButton = () => (
+        <button className="btn btn-tertiary" onClick={() => setDesktopModalOpen(true)}>Change Time</button>
+    )
+
 
     return (
         <>
             <BrowserView>
-                <DateTimePicker onChange={onChange} value={value} />
+                { renderAsModal ? renderModalButton() : renderDesktopDatePicker() }
             </BrowserView>
             <MobileView>
-                <p>{getFullDate(value)}{` `}{getTime(value)}</p>
+                { hideTimeDisplay ? null : <p>{getFullDate(value)}{` `}{getTime(value)}</p> }
                 <button 
-                    className="btn btn-secondary btn-large"
+                    className={`btn btn-${buttonType} ${small ? '' : 'btn-large'}`}
                     onClick={() => setIsOpen(true)}
                 >Change Time</button>
                 <DatePicker 
@@ -78,6 +105,7 @@ export function MDDateTimePicker({onChange, value}){
                     showFooter
                 />
             </MobileView>
+            { renderDesktopModal() }
         </>
 
     )

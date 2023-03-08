@@ -365,7 +365,7 @@ export default function BabyOvervirew(){
                 >Dashboard</button>
             </div>
 
-            <div className="flex flex-start mt-30 flex-wrap align-stretch">
+            <div className="flex justify-center mt-30 flex-wrap align-stretch">
                 <div className="flex flex-col m-10">
                     <Card 
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/sleeps`)} 
