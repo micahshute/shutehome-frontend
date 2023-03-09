@@ -88,8 +88,8 @@ textarea {
   all: unset;
   border: none;
   width: 100%;
-  border-bottom: 3px solid rgb(59, 0, 3);
-  border-top: 1px solid rgb(59, 0, 3);
+  border-bottom: 3px solid #0D1821;
+  border-top: 1px solid #0D1821;
   border-radius: 2px;
   font-family: 'Kalam', sans-serif;
 }
@@ -165,11 +165,16 @@ table {
   width: 180px;
 }
 
+.btn-xl:hover {
+  background-color: #0D1821;
+}
+
 .btn-xl {
   width: 250px;
   height: 100px;
   border-radius: 15px;
   font-size: 1.2em;
+  transition: 0.2s;
 }
 
 .btn-secondary {
@@ -224,7 +229,7 @@ table {
 }
 
 .btn-primary:hover {
-  background-color:#344966;
+  background-color:#0D1821;
 }
 
 .margin-auto {
@@ -710,15 +715,37 @@ table {
 }
 
 .baby-overview-hdr {
-  text-align: center;
+  /* text-align: center; */
+  margin-left: 32px;
   font-weight: bold;
-  margin-bottom: 60px;
-  font-size: 2.3em;
+  margin-bottom: 24px;
+  margin-top: -10px;
+  font-size: 1.8em;
 }
 
 .baby-summary-table {
-  width: 40%;
+  /* width: 40%; */
   /* border-right: 2px solid #00426eec; */
+  margin-bottom: 0px !important;
+  margin-top: 0px !important;
+}
+
+.baby-hdr-txt {
+  margin-left: 12px;
+}
+
+.user-profile {
+  background-color: #93C0A4;
+  padding: 8px;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  padding-top: 20px;
+  padding-left: 14px;
+  padding-right: 14px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: baseline;
 }
 
 .baby-summary-table th{
@@ -747,9 +774,8 @@ table {
   font-size: x-large;
   font-weight: bolder;
   color: black; 
-  border-top: 2px solid #00426eec;
-  border-top-left-radius: 4px;
-  padding: 5px;
+  border-top: 1px solid #00426eec;
+  /* border-top-left-radius: 4px; */
 }
 
 .edit-button:hover {
@@ -832,6 +858,12 @@ table {
     font-family: sans-serif;
     min-width: 280px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table caption {
+  padding: 12px 15px;
+  font-size: 1em;
+  background-color: #f3f3f3;
 }
 
 .styled-table thead tr {

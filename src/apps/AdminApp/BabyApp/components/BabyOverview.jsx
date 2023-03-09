@@ -15,7 +15,7 @@ import TummyTimeRecord from './forms/TummyTimeRecord'
 import EventRecord from './forms/EventRecord'
 import MeasurementRecord from "./forms/MeasurementRecord";
 import PumpRecord from "./forms/PumpRecord";
-import { FaDumbbell, FaGasPump, FaLightbulb, FaMoon, FaToilet, FaUtensils, FaWeight } from "react-icons/fa";
+import { FaDumbbell, FaGasPump, FaLightbulb, FaMoon, FaToilet, FaUser, FaUtensils, FaWeight } from "react-icons/fa";
 
 
 
@@ -312,10 +312,10 @@ export default function BabyOvervirew(){
 
     return (
         <div className="page">
-            <h1 className="baby-overview-hdr">{baby.name}'s File</h1>
+            <h1 className="baby-overview-hdr"><span className="user-profile">< FaUser /></span><span className="baby-hdr-txt">{baby.name}'s File</span></h1>
 
-            <div className="flex space-around">
-                <table className="baby-summary-table">
+            <div className="flex flex-wrap space-around">
+                <table className="styled-table baby-summary-table">
                     <caption className="table-header">
                         Overview
                     </caption>
@@ -338,7 +338,7 @@ export default function BabyOvervirew(){
                         </tr>
                     </tbody>
                 </table>
-                <table className="baby-summary-table">
+                <table className="styled-table baby-summary-table">
                     <caption className="table-header">
                         Birth Data
                     </caption>
