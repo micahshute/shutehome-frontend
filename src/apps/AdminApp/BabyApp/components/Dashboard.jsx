@@ -10,8 +10,9 @@ import { useEffect } from 'react'
 import { Timer } from './Timer'
 import { getVerboseDate, round } from '../../../../lib/helpers/helpers'
 import { useState } from 'react'
-import Card from '../../../../lib/Card'
+import ContentCard from '../../../../lib/ContentCard'
 import { MDDateTimePicker } from './DatePicker'
+import { FaBackward, FaList } from 'react-icons/fa'
 
 const SLEEPING = 'sleeping'
 const TUMMY_TIME = 'tummy_time'
@@ -118,19 +119,25 @@ export default function Dashboard(){
     const renderDashboardSummary = () => {
         return (
             <div className="mt-30">
-                <Card header={`${getVerboseDate(new Date())}`}>
-                    <h3>So far today {baby.name} has...</h3>
-                    <ul>
-                        <li>Eaten {dayStatsData.feeds.total_feeds} times</li>
-                        { dayStatsData.feeds.has_breastfed && <li>Breastfed for {dayStatsData.feeds.total_breastfeed_time} mins</li> }
-                        { dayStatsData.feeds.has_bottlefed && <li>Bottlefed {dayStatsData.feeds.total_bottlefed_amount } fl oz.</li>}
-                        { dayStatsData.feeds.has_solids && <li>Eaten {dayStatsData.feeds.total_solids_amount } oz of solids</li>}
-                        <li>Slept {dayStatsData.sleeps.total_night_sleep_time} hours last night</li>
-                        <li>Napped {dayStatsData.sleeps.total_naps} times for a total of {dayStatsData.sleeps.total_nap_hours} hours</li>
-                        <li>Been changed {dayStatsData.diapers.total_diaper_changes} times, with {dayStatsData.diapers.total_poops} poops and {dayStatsData.diapers.total_pees} pees</li>
-                        <li>Done {dayStatsData.tummy_times.total_tummy_time_minutes} minutes of tummy time in {dayStatsData.tummy_times.total_tummy_times} sessions </li>
-                    </ul>
-                </Card>
+                <ContentCard 
+                    header={`${getVerboseDate(new Date())}`}
+                    headerIcon={<FaList />}
+                    color='sage'     
+                >
+                    <div style={{textAlign: 'left', paddingLeft: '8px'}}>
+                        <h3>So far today {baby.name} has:</h3>
+                        <ul>
+                            <li>Eaten {dayStatsData.feeds.total_feeds} times</li>
+                            { dayStatsData.feeds.has_breastfed && <li>Breastfed for {dayStatsData.feeds.total_breastfeed_time} mins</li> }
+                            { dayStatsData.feeds.has_bottlefed && <li>Bottlefed {dayStatsData.feeds.total_bottlefed_amount } fl oz.</li>}
+                            { dayStatsData.feeds.has_solids && <li>Eaten {dayStatsData.feeds.total_solids_amount } oz of solids</li>}
+                            <li>Slept {dayStatsData.sleeps.total_night_sleep_time} hours last night</li>
+                            <li>Napped {dayStatsData.sleeps.total_naps} times for a total of {dayStatsData.sleeps.total_nap_hours} hours</li>
+                            <li>Been changed {dayStatsData.diapers.total_diaper_changes} times, with {dayStatsData.diapers.total_poops} poops and {dayStatsData.diapers.total_pees} pees</li>
+                            <li>Done {dayStatsData.tummy_times.total_tummy_time_minutes} minutes of tummy time in {dayStatsData.tummy_times.total_tummy_times} sessions </li>
+                        </ul>
+                    </div>
+                </ContentCard>
             </div>
         )
     }
@@ -452,8 +459,8 @@ export default function Dashboard(){
             <div className="flex space-between align-center">
                 <button 
                     onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                    className="btn btn-primary btn-small pullup"     
+                ><FaBackward /></button>
             </div>
             { renderDashboardSummary() }
             { fetchEventData.has_current_event ? renderHasEventDashboard() : renderHasNoEventDashboard() }
