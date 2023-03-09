@@ -488,6 +488,7 @@ export default function BabyOvervirew(){
                         header="Measurement"
                         headerIcon={<FaWeight />}
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/measurements`)} 
+                        color='cambridge-blue'
                     >
                         <div>
                             { renderMeasurements() }

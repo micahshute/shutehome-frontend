@@ -122,7 +122,7 @@ export default function Dashboard(){
                 <ContentCard 
                     header={`${getVerboseDate(new Date())}`}
                     headerIcon={<FaList />}
-                    color='sage'     
+                    color='cambridge-blue'     
                 >
                     <div style={{textAlign: 'left', paddingLeft: '8px'}}>
                         <h3>So far today {baby.name} has:</h3>
