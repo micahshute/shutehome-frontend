@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../../../../hooks/useUser";
 import { getAgeStr, getDate, getFormattedDateTime, getHeight, getHoroscopeSign, getTime, getTimeDiff, getWeight } from "../../../../lib/helpers/helpers";
 import Card from "../../../../lib/Card";
+import ContentCard, { ContentCardAddButton } from "../../../../lib/ContentCard";
 import { useRest } from "../../../../hooks/useRest";
 import Loader from "../../../../lib/Loader";
 import Modal from 'react-modal';
@@ -14,7 +15,7 @@ import TummyTimeRecord from './forms/TummyTimeRecord'
 import EventRecord from './forms/EventRecord'
 import MeasurementRecord from "./forms/MeasurementRecord";
 import PumpRecord from "./forms/PumpRecord";
-import Dashboard from "./Dashboard";
+import { FaDumbbell, FaGasPump, FaLightbulb, FaMoon, FaToilet, FaUtensils, FaWeight } from "react-icons/fa";
 
 
 
@@ -90,7 +91,7 @@ export default function BabyOvervirew(){
         if(data && data.length === 0) return <p>No recent records</p>
         if(data) {
             return (
-                <table className="text-left text-sm">
+                <table className="text-left text-sm styled-table">
                     <tbody>
                         { data.map(event => {
                             return getElement(event)
@@ -367,19 +368,19 @@ export default function BabyOvervirew(){
 
             <div className="flex justify-center mt-30 flex-wrap align-stretch">
                 <div className="flex flex-col m-10">
-                    <Card 
+                    <ContentCard 
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/sleeps`)} 
-                        headerComponent={<h2 className="text-center">Sleep</h2>}
+                        header={'Sleep'}
+                        headerIcon={<FaMoon />}
+                        color="light-blue"
                     >
-                        <div className="ph-20 w-175 text-center">
+                        {/* <div className="ph-20 w-175 text-center"> */}
                             <div>
                                 { renderSleepTimes() }
                             </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGotoSleepModal} center />
-                            </div>
-                        </div>
-                    </Card>
+                            <ContentCardAddButton onClick={handleGotoSleepModal} />
+                        {/* </div> */}
+                    </ContentCard>
                     <Modal 
                         isOpen={addSleepModalIsOpen}
                         onRequestClose={() => setAddSleepModalIsOpen(false)}
@@ -392,19 +393,16 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Eat</h2>}
+                    <ContentCard 
+                        header="Eat"
+                        headerIcon={<FaUtensils />}
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/feedings`)} 
                     >
-                        <div className="ph-20 w-175 text-center">
-                            <div>
-                                { renderFeedings() }
-                            </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGotoFeedModal} center />
-                            </div>
+                        <div>
+                            { renderFeedings() }
                         </div>
-                    </Card>
+                        <ContentCardAddButton onClick={handleGotoFeedModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addFeedModalIsOpen}
                         onRequestClose={() => setAddFeedModalIsOpen(false)}
@@ -417,19 +415,17 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Diaper</h2>}
+                    <ContentCard 
+                        header="Diaper"
+                        headerIcon={ <FaToilet />}
+                        color="french-gray"
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/diapers`)} 
                     >
-                        <div className="ph-20 w-175 text-center">
-                            <div>
-                                { renderDiapers() }
-                            </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGoToDiaperModal} center />
-                            </div>
+                        <div>
+                            { renderDiapers() }
                         </div>
-                    </Card>
+                        <ContentCardAddButton onClick={handleGoToDiaperModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addDiaperModalIsOpen}
                         onRequestClose={() => setAddDiaperModalIsOpen(false)}
@@ -442,19 +438,17 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Tummy Time</h2>}
+                    <ContentCard 
+                        header="Tummy Time"
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/tummy-times`)} 
+                        headerIcon={ <FaDumbbell />}
+                        color="ash-gray"
                     >
-                        <div className="ph-20 w-175 text-center">
-                            <div>
-                                { renderTummyTimes() }
-                            </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGoToTummyTimeModal} center />
-                            </div>
+                        <div>
+                            { renderTummyTimes() }
                         </div>
-                    </Card>
+                        <ContentCardAddButton onClick={handleGoToTummyTimeModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addTummyTimeModalIsOpen}
                         onRequestClose={() => setAddTummyTimeModalIsOpen(false)}
@@ -467,19 +461,17 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Pump</h2>}
+                    <ContentCard 
+                        header="Pump"
+                        headerIcon={ <FaGasPump />}
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/pumps`)} 
+                        color="dutch-white"
                     >
-                        <div className="ph-20 w-175 text-center">
-                            <div>
-                                { renderPumps() }
-                            </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGoToPumpModal} center />
-                            </div>
+                        <div>
+                            { renderPumps() }
                         </div>
-                    </Card>
+                        <ContentCardAddButton onClick={handleGoToPumpModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addPumpModalIsOpen}
                         onRequestClose={() => setAddPumpModalIsOpen(false)}
@@ -492,19 +484,16 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Measurement</h2>}
+                    <ContentCard 
+                        header="Measurement"
+                        headerIcon={<FaWeight />}
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/measurements`)} 
                     >
-                        <div className="ph-20 w-175 text-center">
-                            <div>
-                                { renderMeasurements() }
-                            </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGoToMeasurementModal} center />
-                            </div>
+                        <div>
+                            { renderMeasurements() }
                         </div>
-                    </Card>
+                        <ContentCardAddButton onClick={handleGoToMeasurementModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addMeasurementModalIsOpen}
                         onRequestClose={() => setAddMeasurementModalIsOpen(false)}
@@ -517,19 +506,17 @@ export default function BabyOvervirew(){
                     </Modal>
                 </div>
                 <div className="flex flex-col m-10">
-                    <Card 
-                        headerComponent={<h2 className="text-center">Event</h2>}
+                    <ContentCard 
+                        header="Event"
+                        headerIcon={<FaLightbulb />}
+                        color='beige'
                         onClick={() => navigate(`/baby-tracker/babies/${baby.id}/events`)} 
                     >
-                        <div className="ph-20 w-175 text-center">
                             <div>
                                 { renderEvents() }
                             </div>
-                            <div className="text-center">
-                                <AddElementButton onClick={handleGoToEventModal} center />
-                            </div>
-                        </div>
-                    </Card>
+                            <ContentCardAddButton onClick={handleGoToEventModal} />
+                    </ContentCard>
                     <Modal 
                         isOpen={addEventModalIsOpen}
                         onRequestClose={() => setAddEventModalIsOpen(false)}
