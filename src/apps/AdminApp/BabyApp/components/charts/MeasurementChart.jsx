@@ -64,7 +64,7 @@ export default function MeasurementChart({ sortedMeasurementData, width='100%' }
 
     // console.log('measurementData', measurementData)
     const graphData = transformData(sortedMeasurementData)
-    console.log('graphData', graphData)
+    // console.log('graphData', graphData)
 
     let derivativeData = []
     try{

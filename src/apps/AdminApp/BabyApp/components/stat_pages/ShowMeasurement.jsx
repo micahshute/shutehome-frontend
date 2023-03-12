@@ -1,16 +1,17 @@
 import { useMemo } from "react"
 import { useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
 import AddElementButton from "../../../../../lib/AddElementButton"
 import Card from "../../../../../lib/Card"
-import { getAgeStrAtDate, getDate, getFullDate, getTime } from "../../../../../lib/helpers/helpers"
+import { getDate } from "../../../../../lib/helpers/helpers"
 import Loader from "../../../../../lib/Loader"
 import { AiFillEdit } from "react-icons/ai"
 import MeasurementRecord from "../forms/MeasurementRecord"
 import Modal from 'react-modal';
 import MeasurementChart from "../charts/MeasurementChart"
+import BackButton from "../../../../../lib/BackButton"
 
 export default function ShowMeasurement(){
 
@@ -18,7 +19,6 @@ export default function ShowMeasurement(){
     const [makeNewRecord, setMakeNewRecord] = useState(false)
     const [recordToEdit, setRecordToEdit] = useState(null)
 
-    const navigate = useNavigate()
     const { id } = useParams()
     const { babies } = useUser().user
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === id.toString()), [babies, id])
@@ -147,13 +147,11 @@ export default function ShowMeasurement(){
         <div className="page">
             <h1>{baby.name}'s Measurements</h1>
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
                 <div className="flex flex-col align-center flex-center">
-                    <p className="text-bottom text-lg bold mt-0">Add Record</p>
-                    <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    <div style={{paddingBottom: '10px'}}>
+                        <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    </div>
                 </div>
             </div>
             <div className="mt-30">
@@ -166,10 +164,9 @@ export default function ShowMeasurement(){
             </div>
             { renderEditModal() }
             <div className="flex space-between align-center mt-30">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <div className="mt-30">
+                    <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+                </div>
             </div>
         </div>
     )

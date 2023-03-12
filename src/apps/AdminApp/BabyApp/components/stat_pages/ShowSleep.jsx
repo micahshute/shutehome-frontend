@@ -7,17 +7,17 @@ import { Day } from "../../../../../lib/helpers/time/dateMath"
 import { DateRange } from "../../../../../lib/helpers/time/dateRange"
 import Loader from "../../../../../lib/Loader"
 import RangedEventDayChart from "../charts/RangedEventDayChart"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
 import SleepRecord from "../forms/SleepRecord"
 import AddElementButton from "../../../../../lib/AddElementButton"
+import BackButton from "../../../../../lib/BackButton"
 
 export default function ShowSleep(){
 
     const { id } = useParams()
     const { babies } = useUser().user
-    const navigate = useNavigate()
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [sleepRecordToEdit, setSleepRecordToEdit] = useState(null)
@@ -56,7 +56,6 @@ export default function ShowSleep(){
         const day = new Day(date)
         return day.toString()
     })
-
     let totalSleepTimeMinutes = 0
     const todayDay = new Day(today)
     let shouldSubtractDaysWithDataByOne = false
@@ -133,7 +132,6 @@ export default function ShowSleep(){
         if(currSleepIndex > 0) { currSleepIndex-- }
         return mem
     }, {})    
-
 
     const renderCardForDay = dayStr => {
         const shouldRender = (daysToApplicableDateRanges[dayStr] || []).length > 0
@@ -248,22 +246,19 @@ export default function ShowSleep(){
     return (
         <div className="page">
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
                 <div className="flex flex-col align-center flex-center">
-                    <p className="text-bottom text-lg bold mt-0">Add Record</p>
-                    <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    <div style={{paddingBottom: '10px'}}>
+                        <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    </div>
                 </div>
             </div>
             { daysWithDataExceptToday > 0 && <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2> }
             <p className="text-sm">Coming soon: Avg bedtime</p>
             { renderDayCards() }
-            <button 
-                onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                className="btn btn-primary"     
-            >Back</button>
+            <div className="mt-30">
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+            </div>
             { renderEditModal() }
         </div>
     )

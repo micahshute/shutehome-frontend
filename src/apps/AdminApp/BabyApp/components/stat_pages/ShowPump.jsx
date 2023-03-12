@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
 import Card from "../../../../../lib/Card"
@@ -12,6 +12,7 @@ import PumpRecord from "../forms/PumpRecord";
 import AddElementButton from "../../../../../lib/AddElementButton";
 import PumpStatsChart from "../charts/PumpOverviewChart"
 import Loader from "../../../../../lib/Loader"
+import BackButton from "../../../../../lib/BackButton"
 
 
 export default function ShowPump(){
@@ -20,7 +21,6 @@ export default function ShowPump(){
     const [makeNewRecord, setMakeNewRecord] = useState(false)
     const [pumpRecordToEdit, setPumpRecordToEdit] = useState(null)
 
-    const navigate = useNavigate()
     const { id } = useParams()
     const { babies } = useUser().user
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === id.toString()), [babies, id])
@@ -217,13 +217,9 @@ export default function ShowPump(){
         <div className="page">
             <h1 className="text-center">Pump Record</h1>
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
-                <div className="w-15 minw-100p mt-0">
-                    <div className="flex flex-col align-center flex-center">
-                        <p className="text-bottom text-lg bold mt-0">Add Record</p>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+                <div className="flex flex-col align-center flex-center">
+                    <div style={{paddingBottom: '10px'}}>
                         <AddElementButton onClick={openCreateModal} center className="mt-0"/>
                     </div>
                 </div>
@@ -236,10 +232,9 @@ export default function ShowPump(){
                 { renderPumpCardsByDay() }
 
             </div>
-            <button 
-                onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                className="btn btn-primary"     
-            >Back</button>
+            <div className="mt-30">
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+            </div>
             { renderEditModal() }
         </div>
     )

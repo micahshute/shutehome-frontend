@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useRest } from "../../../../../hooks/useRest"
 import { useUser } from "../../../../../hooks/useUser"
 import AddElementButton from "../../../../../lib/AddElementButton"
@@ -10,13 +10,13 @@ import DiaperRecord from "../forms/DiaperRecord"
 import { getDate, getTime, sortBy } from "../../../../../lib/helpers/helpers"
 import { Day } from "../../../../../lib/helpers/time/dateMath"
 import Card from "../../../../../lib/Card"
+import BackButton from "../../../../../lib/BackButton"
 
 export default function ShowDiaper(){
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [makeNewRecord, setMakeNewRecord] = useState(false)
     const [recordToEdit, setRecordToEdit] = useState(null)
 
-    const navigate = useNavigate()
     const { id } = useParams()
     const { babies } = useUser().user
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === id.toString()), [babies, id])
@@ -165,21 +165,18 @@ export default function ShowDiaper(){
         <div className="page">
             <h1>{baby.name}'s Diapers</h1>
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
                 <div className="flex flex-col align-center flex-center">
-                    <p className="text-bottom text-lg bold mt-0">Add Record</p>
-                    <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    <div style={{paddingBottom: '10px'}}>
+                        <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    </div>
                 </div>
             </div>
             { renderDataCards(dataGroupedByDay) }
             <div className="flex space-between align-center mt-30">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <div className="mt-30">
+                    <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+                </div>
             </div>
             { renderEditModal() }
         </div>

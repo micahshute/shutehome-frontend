@@ -7,17 +7,17 @@ import { Day } from "../../../../../lib/helpers/time/dateMath"
 import { DateRange } from "../../../../../lib/helpers/time/dateRange"
 import Loader from "../../../../../lib/Loader"
 import RangedEventDayChart from "../charts/RangedEventDayChart"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { AiFillEdit } from "react-icons/ai"
 import Modal from 'react-modal';
 import TummyTimeRecord from "../forms/TummyTimeRecord"
 import AddElementButton from "../../../../../lib/AddElementButton"
+import BackButton from "../../../../../lib/BackButton"
 
 export default function ShowTummyTime(){
 
     const { id } = useParams()
     const { babies } = useUser().user
-    const navigate = useNavigate()
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [eventRecordToEdit, setEventRecordToEdit] = useState(null)
@@ -242,21 +242,18 @@ export default function ShowTummyTime(){
         <div className="page">
             <h1>{baby.name}'s Tummy Times</h1>
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary"     
-                >Back</button>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
                 <div className="flex flex-col align-center flex-center">
-                    <p className="text-bottom text-lg bold mt-0">Add Record</p>
-                    <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    <div style={{paddingBottom: '10px'}}>
+                        <AddElementButton onClick={openCreateModal} center className="mt-0"/>
+                    </div>
                 </div>
             </div>
             { numberOfDaysWithData > 0 && <h2 className="mt-30">Average {averageHoursPerDay} hrs/day</h2> }
             { renderDayCards() }
-            <button 
-                onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                className="btn btn-primary"     
-            >Back</button>
+            <div className="mt-30">
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
+            </div>
             { renderEditModal() }
         </div>
     )

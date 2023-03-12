@@ -33,14 +33,21 @@ export class DateMath {
         return new Date(newDate)
     }
 
-    static beginningOfDay(date){
-        const inputDate = new Date(date)
-        const timezoneMinuteOffset = inputDate.getTimezoneOffset()
-        const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
-        const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
-        newDate.setUTCHours(0,0,0,0)
-        return new Date(newDate.getTime() + timezoneMsOffset)
+    // static beginningOfDay(date){
+    //     const inputDate = new Date(date)
+    //     const timezoneMinuteOffset = inputDate.getTimezoneOffset()
+    //     const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
+    //     const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
+    //     newDate.setUTCHours(0,0,0,0)
+    //     return new Date(newDate.getTime() + timezoneMsOffset)
 
+    // }
+
+    static beginningOfDay(date) {
+        const year = date.getFullYear()
+        const month = date.getMonth()
+        const day = date.getDate()
+        return new Date(year, month, day, 0,0,0,0)
     }
 
     static endOfDayUTC(date) {
@@ -49,14 +56,21 @@ export class DateMath {
         return new Date(newDate)
     }
 
-    static endOfDay(date) {
-        const inputDate = new Date(date)
-        const timezoneMinuteOffset = inputDate.getTimezoneOffset()
-        const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
-        const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
-        newDate.setUTCHours(23,59,59,999)
-        return new Date(newDate.getTime() + timezoneMsOffset)
+    static endOfDay(date){
+        const year = date.getFullYear()
+        const month = date.getMonth()
+        const day = date.getDate()
+        return new Date(year, month, day, 23, 59, 59, 999)
     }
+
+    // static endOfDay(date) {
+    //     const inputDate = new Date(date)
+    //     const timezoneMinuteOffset = inputDate.getTimezoneOffset()
+    //     const timezoneMsOffset = timezoneMinuteOffset * 60 * 1000
+    //     const newDate = new Date(inputDate.getTime() - timezoneMsOffset)
+    //     newDate.setUTCHours(23,59,59,999)
+    //     return new Date(newDate.getTime() + timezoneMsOffset)
+    // }
 
     static beginningOfWeek(date){
         if(date.getDay() === 0){

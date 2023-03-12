@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useLazyRest } from '../../../../hooks/useLazyRest'
 import { useRest } from '../../../../hooks/useRest'
 import { useUser } from '../../../../hooks/useUser'
@@ -12,7 +12,8 @@ import { getVerboseDate, round } from '../../../../lib/helpers/helpers'
 import { useState } from 'react'
 import ContentCard from '../../../../lib/ContentCard'
 import { MDDateTimePicker } from './DatePicker'
-import { FaBackward, FaList } from 'react-icons/fa'
+import { FaList } from 'react-icons/fa'
+import BackButton from '../../../../lib/BackButton'
 
 const SLEEPING = 'sleeping'
 const TUMMY_TIME = 'tummy_time'
@@ -38,7 +39,6 @@ export default function Dashboard(){
     const { id: babyId } = useParams()
     const { user } = useUser()
     const { babies } = user
-    const navigate = useNavigate()
 
     const [feedType, setFeedType] = useState(FEED_TYPES.FORMULA)
     const [feedAmount, setFeedAmount] = useState(0)
@@ -457,10 +457,7 @@ export default function Dashboard(){
     return (
         <div className="page">
             <div className="flex space-between align-center">
-                <button 
-                    onClick={() => navigate(`/baby-tracker/babies/${baby.id}`)}
-                    className="btn btn-primary btn-small pullup"     
-                ><FaBackward /></button>
+                <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
             </div>
             { renderDashboardSummary() }
             { fetchEventData.has_current_event ? renderHasEventDashboard() : renderHasNoEventDashboard() }

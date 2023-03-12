@@ -2,10 +2,11 @@ import BabyCard from "./BabyCard";
 import { useUser } from "../../../../hooks/useUser";
 import AddElementButton from "../../../../lib/AddElementButton";
 import Card from "../../../../lib/Card";
-import { BrowserView, MobileView, isBrowser, isMobile } from 'react-device-detect'
+import { isMobile } from 'react-device-detect'
 import Modal from 'react-modal';
 import { useState } from "react";
 import RegisterBaby from "./RegisterBaby";
+import FamilyImg from '../../../../assets/happy-family-at-sunrise-vector.webp'
 
 
 Modal.setAppElement('#root')
@@ -17,20 +18,21 @@ export default function Home(){
 
     const renderBabyCards = () => (
         user.babies.map(baby => (
-            <BabyCard 
-                key={baby.id} 
-                baby={baby} 
-            />
+            <div style={{margin: '8px'}}>
+                <BabyCard 
+                    key={baby.id} 
+                    baby={baby} 
+                />
+            </div>
         ))
     )
 
     return (
         <>
             <div className="page">
-                <div className="w-75 center">
-                    <Card header={`${user.name}'s family`}>
+                <div className="w-75 center flex flex-col">
+                    <Card header={`${user.name}'s family`} img={FamilyImg}>
                         <div className="text-center">
-                            <p>Welcome! Manage your family here.</p>
                         </div>
                     </Card>
 
