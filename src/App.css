@@ -884,6 +884,10 @@ table {
   color: rgb(179, 1, 1);
 }
 
+.amber {
+  color: rgb(218, 143, 30);
+}
+
 .x {
     border: none;
     /* border-radius: 3px;

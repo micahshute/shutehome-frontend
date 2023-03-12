@@ -60,6 +60,47 @@ export default function Dashboard(){
     const loading = fetchEventLoading || currentEventLoading || createEventLoading || dayStatsLoading || updateEventLoading
     const error = fetchEventError || currentEventError || dayStatsError || createEventError || updateEventError
 
+    const getSleepTimeWindowMinutes = useMemo(() => {
+        // 0-4 weeks ==> 35-60 mins
+        // 4-12 weeks ==> 60-90 mins
+        // 3-4 months ==> 75-120 mins
+        // 5-7 months ==> 2-3 hrs (120-180 mins)
+        // 7-10 months ==> 2.5-3.5 hrs (150-210 mins)
+        // 11-14 months ==> 3-4 hrs (180-240 mins)
+        // 14-24 months ==> 4-6 hrs (240-360 mins)
+        const babyBirthdate = new Date(baby.birthdate)
+        const now = new Date()
+        const diff = now - babyBirthdate
+        const babyAgeInDays = diff / 1000 / 60 / 60 / 24
+        const fourWeeks = 7 * 4
+        const twelveWeeks = 7 * 12
+        const avgDayPerMonth = 365 / 12
+        const fiveMonths = avgDayPerMonth * 4
+        const sevenMonths = avgDayPerMonth * 7
+        const elevenMonths = avgDayPerMonth * 11
+        const fourteenMonths = avgDayPerMonth * 14
+        const twentyfiveMonths = avgDayPerMonth * 25
+        if(babyAgeInDays <= fourWeeks){
+            return { min: 25, max: 60 }
+        }else if(babyAgeInDays <= twelveWeeks){
+            return { min: 60, max: 90} 
+        }else if(babyAgeInDays < fiveMonths){
+            return { min: 75, max: 120}
+        }else if (babyAgeInDays < sevenMonths){
+            return { min: 120, max: 180 }
+        }else if(babyAgeInDays < elevenMonths){
+            return { min: 150, max: 210 }
+        }else if(babyAgeInDays < fourteenMonths){
+            return { min: 180, max: 240 }
+        }else if(babyAgeInDays < twentyfiveMonths){
+            return { min: 240, max: 360 }
+        }else {
+            return { min: Infinity, max: Infinity }
+        }
+    }, [baby])
+
+    const {min: sleepWindowMin, max: sleepWindowMax} = getSleepTimeWindowMinutes
+
     useEffect(() => {
         if(!createEventLoading && !createEventError && createEventData){
             deleteCurrentEvent()
@@ -372,17 +413,21 @@ export default function Dashboard(){
         })
     }
 
+
     const renderSleepTimer = () => {
         if(fetchEventData.has_current_event && fetchEventData.current_event.name === SLEEPING) {
             return null
         }
 
-        const SLEEP_TIME_WINDOW_MINUTES = 90
-
         return (
             <div className='w-80'>
                 <p>Time since last sleep</p>
-                <Timer skinny startTime={new Date(dayStatsData.sleeps.last_sleep_time)} minutesUntilDanger={SLEEP_TIME_WINDOW_MINUTES} />
+                <Timer 
+                    skinny 
+                    startTime={new Date(dayStatsData.sleeps.last_sleep_time)} 
+                    minutesUntilWarning={sleepWindowMin} 
+                    minutesUntilDanger={sleepWindowMax} 
+                />
             </div>
         )
     }

@@ -3,9 +3,10 @@ import { useEffect } from "react";
 import { pad } from "../../../../lib/helpers/helpers";
 
 
-export function Timer({startTime, skinny, minutesUntilDanger=Infinity}){
+export function Timer({startTime, skinny, minutesUntilWarning=Infinity, minutesUntilDanger=Infinity}){
 
     const DANGER_COLOR_CLASS = 'red'
+    const WARNING_COLOR_CLASS= 'amber'
 
     const getSecondsFromStartTime = () => {
         const now = new Date()
@@ -19,8 +20,11 @@ export function Timer({startTime, skinny, minutesUntilDanger=Infinity}){
     useEffect(() => {
         const interval = setInterval(() => {
             const currentSeconds = getSecondsFromStartTime()
+            if(colorClass !== DANGER_COLOR_CLASS && currentSeconds / 60 >= minutesUntilWarning && currentSeconds / 60 < minutesUntilDanger){
+                setColorClass(WARNING_COLOR_CLASS)
+            }
             if(colorClass !== DANGER_COLOR_CLASS && currentSeconds / 60 >= minutesUntilDanger){
-                setColorClass('red')
+                setColorClass(DANGER_COLOR_CLASS)
             }
             setSeconds(currentSeconds)
         }, 1000)
