@@ -1,4 +1,4 @@
-import { parseUTCDate } from "../helpers"
+import { normalizeDateStrOrObj, parseUTCDate } from "../helpers"
 import { DateRange } from './dateRange'
 
 export class DateMath {
@@ -117,7 +117,8 @@ export class Day extends DateUnit {
         return Math.round(range.durationMinutes() / (60 * 24))
     }
 
-    constructor(date){
+    constructor(dateArg){
+        const date = normalizeDateStrOrObj(dateArg)
         const startTime = DateMath.beginningOfDay(date)
         const endTime = DateMath.endOfDay(date)
         super(startTime, endTime)
