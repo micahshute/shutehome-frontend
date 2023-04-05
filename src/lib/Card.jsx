@@ -3,7 +3,7 @@ export default function Card({ header, children, onClick, headerComponent=null, 
     const renderImage = () => {
         if(!img) { return null }
         return (
-            <img src={img} width={"98%"} style={{
+            <img src={img} width="99%" style={{
                 borderTopRightRadius: '30px',
                 borderTopLeftRadius: '30px',
                 paddingLeft: '2px',

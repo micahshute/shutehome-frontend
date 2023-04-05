@@ -310,9 +310,26 @@ export default function BabyOvervirew(){
         setAddEventModalIsOpen(true)
     }
 
+    const procareAvatar = baby.integrations?.length && baby.integrations[0].procare_avatar
+
     return (
         <div className="page">
-            <h1 className="baby-overview-hdr"><span className="user-profile">< FaUser /></span><span className="baby-hdr-txt">{baby.name}'s File</span></h1>
+
+            { procareAvatar ? 
+            <div className="flex flex-start align-self-end ml-24 mb-14">
+                {/* <h1 className="baby-overview-hdr align-vertical">
+                    <img src={procareAvatar} className='user-profile-img' /> 
+                    <span className="baby-hdr-txt">{baby.name}'s File</span>
+                </h1> */}
+                <img src={procareAvatar} className='user-profile-img' /> 
+                <h1 className="baby-overview-hdr align-vertical" style={{marginLeft: '0px'}}>
+                    <span className="baby-hdr-txt">{baby.name}'s File</span>
+                </h1>
+            </div>
+                :
+                <h1 className="baby-overview-hdr"><span className="user-profile">< FaUser /></span><span className="baby-hdr-txt">{baby.name}'s File</span></h1>
+            
+            }
 
             <div className="flex flex-wrap space-around">
                 <table className="styled-table baby-summary-table">

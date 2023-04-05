@@ -8,12 +8,13 @@ import Loader from '../../../../lib/Loader'
 import { useToasts } from "react-toast-notifications"
 import { useEffect } from 'react'
 import { Timer } from './Timer'
-import { getVerboseDate, round } from '../../../../lib/helpers/helpers'
+import { getStandardFormatDate, getVerboseDate, round } from '../../../../lib/helpers/helpers'
 import { useState } from 'react'
 import ContentCard from '../../../../lib/ContentCard'
 import { MDDateTimePicker } from './DatePicker'
-import { FaList } from 'react-icons/fa'
+import { FaCheckCircle, FaList } from 'react-icons/fa'
 import BackButton from '../../../../lib/BackButton'
+import { AiFillCloseCircle } from 'react-icons/ai'
 
 const SLEEPING = 'sleeping'
 const TUMMY_TIME = 'tummy_time'
@@ -52,10 +53,24 @@ export default function Dashboard(){
 
     const baby = useMemo(() => babies.find(baby => baby.id.toString() === babyId.toString()), [babies, babyId])
     const { data: fetchEventData, loading: fetchEventLoading, error: fetchEventError, reload: refetchCurrentEvent } = useRest(`/babies/${babyId}/current_event`, 'GET')
+    const { data: syncProcareData, loading: syncProcareLoading, error: syncProcareError, call: callSyncProcare } = useLazyRest()
     const { data: dayStatsData, loading: dayStatsLoading, error: dayStatsError, reload: refetchDayStats } = useRest(`/babies/${babyId}/day_stats`, 'GET', null, { useTimezone: true })
     const { data: createEventData, loading: createEventLoading, error: createEventError, call: createEventCall, reset: createEventReset} = useLazyRest()
     const { data: currentEventData, loading: currentEventLoading, error: currentEventError, call: callCurrentEvent } = useLazyRest()
     const { data: updatedEventData, loading: updateEventLoading, error: updateEventError, call: callUpdateEvent } = useLazyRest()
+
+    const procareIntegration = baby.integrations?.find(integration => integration.integration_type === "procare")
+    const hasProcareIntegration = !!procareIntegration
+
+    useEffect(() => {
+        if(hasProcareIntegration){
+            callSyncProcare('/integrations/procare/sync', "POST", {
+                babyId: baby.id,
+                date: getStandardFormatDate(new Date())
+            })
+        }
+
+    }, [hasProcareIntegration])
 
     const loading = fetchEventLoading || currentEventLoading || createEventLoading || dayStatsLoading || updateEventLoading
     const error = fetchEventError || currentEventError || dayStatsError || createEventError || updateEventError
@@ -100,6 +115,24 @@ export default function Dashboard(){
     }, [baby])
 
     const {min: sleepWindowMin, max: sleepWindowMax} = getSleepTimeWindowMinutes
+
+    useEffect(() => {
+        if(syncProcareData && !syncProcareLoading && !syncProcareError){
+            refetchDayStats()
+            refetchCurrentEvent()
+            const checkinEvent = syncProcareData.data.find(event => (
+                event.type === 'check_in'
+            ))
+            const checkoutEvent = syncProcareData.data.find(event => (
+                event.type === 'check_out'
+            ))
+
+            window.localStorage.setItem('check_in', checkinEvent?.time)
+            window.localStorage.setItem('check_out', checkoutEvent?.time)
+
+        }
+
+    }, [syncProcareData, syncProcareLoading, syncProcareError])
 
     useEffect(() => {
         if(!createEventLoading && !createEventError && createEventData){
@@ -499,11 +532,43 @@ export default function Dashboard(){
         )
     }
 
+    const renderProcareIndication = () => {
+        if(!hasProcareIntegration) { return null }
+        if(syncProcareData && !syncProcareLoading && !syncProcareError){
+            return (
+                <div className="flex flex-row align-center" style={{height: '40px', minHeight: '40px', maxHeight: '40px'}}>
+                    <p className="text-sm">Procare Synced</p>
+                    <span style={{marginLeft: '14px'}}>
+                        <FaCheckCircle  color={'green'} />
+                    </span>
+                </div>
+            )
+        }else if(syncProcareLoading){
+            return (
+                <div className="flex flex-row align-start justify-start" style={{height: '40px', minHeight: '40px', maxHeight: '40px'}}>
+                    <div style={{width: '40px', paddingTop: '2px'}}>
+                        <Loader dark />
+                    </div>
+                </div>
+            )
+        }else if(syncProcareError){
+            return (
+                <div className="flex flex-row align-center"style={{height: '40px', minHeight: '40px', maxHeight: '40px'}}>
+                    <p className="text-sm">Error syncing Procare</p>
+                    <span style={{marginLeft: '14px'}}>
+                        <AiFillCloseCircle color="red" />
+                    </span>
+                </div>
+            )
+        }
+    }
+
     return (
         <div className="page">
             <div className="flex space-between align-center">
                 <BackButton pathUrl={`/baby-tracker/babies/${baby.id}`} />
             </div>
+            { renderProcareIndication() }
             { renderDashboardSummary() }
             { fetchEventData.has_current_event ? renderHasEventDashboard() : renderHasNoEventDashboard() }
         </div>
